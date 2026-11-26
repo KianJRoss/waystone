@@ -1,5 +1,4 @@
 import copy
-import fcntl
 import json
 import os
 import sys

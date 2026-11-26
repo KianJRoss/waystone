@@ -2,6 +2,8 @@ from pathlib import PureWindowsPath
 import errno
 import tempfile
 
+import pytest
+
 from native_services.platform import (WindowsProcessReader, app_roots, is_linux, is_windows,
                                       process_launch_options)
 from native_services import file_locking
@@ -82,6 +84,7 @@ def test_portable_file_lock_maps_windows_shared_to_safe_exclusive_and_nonblockin
     assert calls == ["lock", "try_lock", "unlock"]
 
 
+@pytest.mark.linux_only
 def test_posix_file_lock_keeps_flock_contract():
     with tempfile.TemporaryFile() as stream:
         file_locking.flock(stream.fileno(), file_locking.LOCK_EX)

@@ -20,10 +20,15 @@ jobs:
           sudo apt-get install -y --no-install-recommends libegl1 libgl1 libxkbcommon0 libxkbcommon-x11-0 \
             libfontconfig1 libdbus-1-3 libxcb-cursor0 libxcb-icccm4 libxcb-keysyms1 libxcb-shape0 xvfb \
             libarchive-tools
-      - name: Test suite
+      - name: Test suite (native Linux)
         env:
           QT_QPA_PLATFORM: offscreen
         run: uv run -q --with-requirements requirements-test.txt python -m pytest -q -p no:cacheprovider tests craft-projects/playnite-desktop/app
+      - name: Windows compatibility simulation (POSIX-only imports blocked)
+        env:
+          QT_QPA_PLATFORM: offscreen
+          PYTHONPATH: ".:craft-projects/playnite-desktop:craft-projects/playnite-desktop/app"
+        run: uv run -q --with-requirements requirements-test.txt python -m pytest -q -p no:cacheprovider -p tests.windows_compat_guard -m "not linux_only" tests craft-projects/playnite-desktop/app
       - name: Controller QML tests
         run: bash craft-projects/playnite-desktop/app/controller_native/run_tests.sh
 
