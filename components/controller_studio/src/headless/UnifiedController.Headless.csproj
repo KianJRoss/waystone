@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Historical duplicate is retained as provenance, not compiled twice. -->
+    <Compile Remove="snapshot/ProfileControlService.cs" />
+    <Compile Include="../commands-integrated/profiles-devices-v2/CommandService.cs" Link="ControllerCommandService.cs" />
+    <Compile Include="../commands-integrated/profiles-devices-v2/ProfileCommandService.cs" Link="ControllerProfileCommandService.cs" />
+    <Compile Include="../commands-integrated/profiles-devices-v2/DeviceCommandService.cs" Link="ControllerDeviceCommandService.cs" />
+    <ProjectReference Include="../upstream/src/UnifiedController.Core/UnifiedController.Core.csproj" />
+    <ProjectReference Include="../upstream/src/UnifiedController.Linux.Platform/UnifiedController.Linux.Platform.csproj" />
+  </ItemGroup>
+</Project>

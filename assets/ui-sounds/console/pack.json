@@ -1,0 +1,14 @@
+{
+  "name": "Console",
+  "description": "Tight clicks and low thumps. Punchy and quick.",
+  "version": 1,
+  "sounds": {
+    "move": "move.wav",
+    "select": "select.wav",
+    "back": "back.wav",
+    "open": "open.wav",
+    "launch": "launch.wav",
+    "error": "error.wav",
+    "notify": "notify.wav"
+  }
+}

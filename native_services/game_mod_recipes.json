@@ -1,0 +1,152 @@
+{
+  "schema": 1,
+  "source": "research/w7/game-mod-setups.md (fleet factory research, 2026-11-23; primary sources cited there)",
+  "games": {
+    "cyberpunk2077": {
+      "titles": ["Cyberpunk 2077"],
+      "steam_appid": "1091500",
+      "nexus_domain": "cyberpunk2077",
+      "install_root": "game",
+      "frameworks": [
+        {"name": "RED4ext", "nexus_id": 2380, "why": "native plugin loader"},
+        {"name": "redscript", "nexus_id": 1511, "why": "script compiler most mods need"},
+        {"name": "Cyber Engine Tweaks", "nexus_id": 107, "why": "Lua mods and in-game console"},
+        {"name": "ArchiveXL", "nexus_id": 4198, "why": "only when a mod requires it"},
+        {"name": "TweakXL", "nexus_id": 4197, "why": "only when a mod requires it"},
+        {"name": "Codeware", "nexus_id": 7780, "why": "only when a mod requires it"}
+      ],
+      "paths": ["archive/pc/mod", "bin/x64/plugins", "red4ext/plugins", "r6/scripts", "r6/tweaks", "mods"],
+      "launch_options": "WINEDLLOVERRIDES=\"winmm,version=n,b\" %command%",
+      "prefix_components": ["d3dcompiler_47", "vcrun2022"],
+      "manager": "waystone",
+      "notes": ["Avoid REDmod where possible.", "Every core framework must match the game patch."]
+    },
+    "reddeadredemption2": {
+      "titles": ["Red Dead Redemption 2"],
+      "steam_appid": "1174180",
+      "nexus_domain": "reddeadredemption2",
+      "install_root": "game",
+      "frameworks": [
+        {"name": "ScriptHookRDR2", "url": "http://www.dev-c.com/rdr2/scripthookrdr2/", "why": "script loader (dinput8.dll + ScriptHookRDR2.dll next to RDR2.exe)"},
+        {"name": "Lenny's Mod Loader", "url": "https://www.nexusmods.com/reddeadredemption2", "why": "replacement mods go in lml/<mod>"}
+      ],
+      "paths": ["lml", "."],
+      "launch_options": "WINEDLLOVERRIDES=\"dinput8=n,b\" %command%",
+      "launch_options_verified": false,
+      "manager": "waystone",
+      "notes": ["Single-player only: never use mods in Red Dead Online."]
+    },
+    "skyrimspecialedition": {
+      "titles": ["The Elder Scrolls V: Skyrim Special Edition", "Skyrim Special Edition", "The Elder Scrolls V: Skyrim Anniversary Edition"],
+      "steam_appid": "489830",
+      "nexus_domain": "skyrimspecialedition",
+      "install_root": "Data",
+      "frameworks": [
+        {"name": "SKSE64 (match the game build: 1.5.97 -> 2.0.20, 1.6.1170 -> 2.2.6, AE 1.7 -> 2.3.x)", "url": "https://skse.silverlock.org/", "nexus_id": 30379},
+        {"name": "Address Library for SKSE Plugins", "nexus_id": 32444}
+      ],
+      "paths": ["Data", "Data/SKSE/Plugins"],
+      "manager": "mo2",
+      "manager_tool": "MO2-LINT (github.com/Furglitch/modorganizer2-linux-installer): mo2-lint install skyrim_se --script-extender",
+      "notes": ["Mod Organizer 2 recommended for load order, FOMOD installers and a clean game folder.", "SKSE does not support Game Pass or Epic copies."]
+    },
+    "fallout4": {
+      "titles": ["Fallout 4", "Fallout 4: Game of the Year Edition"],
+      "steam_appid": "377160",
+      "nexus_domain": "fallout4",
+      "install_root": "Data",
+      "frameworks": [
+        {"name": "F4SE (match the runtime: 1.11.240 -> 0.7.9, 1.10.984 -> 0.7.2)", "url": "https://f4se.silverlock.org/"},
+        {"name": "Address Library for F4SE Plugins", "nexus_id": 47327}
+      ],
+      "paths": ["Data", "Data/F4SE/Plugins"],
+      "launch_options": "WINEDLLOVERRIDES=\"winmm,version=n,b\" %command%",
+      "manager": "mo2",
+      "manager_tool": "MO2-LINT: mo2-lint install fallout4 --script-extender",
+      "notes": ["F4SE does not support the Windows Store copy."]
+    },
+    "newvegas": {
+      "titles": ["Fallout: New Vegas"],
+      "steam_appid": "22380",
+      "nexus_domain": "newvegas",
+      "install_root": "Data",
+      "frameworks": [
+        {"name": "xNVSE (copy into the game folder, not Data)", "nexus_id": 67883},
+        {"name": "4GB Patcher", "nexus_id": 62552},
+        {"name": "Crash Logger", "nexus_id": 82540}
+      ],
+      "paths": ["Data"],
+      "manager": "mo2",
+      "manager_tool": "MO2-LINT: mo2-lint install newvegas"
+    },
+    "thesims4": {
+      "titles": ["The Sims 4"],
+      "steam_appid": "1222670",
+      "nexus_domain": "thesims4",
+      "install_root": "prefix:drive_c/users/steamuser/Documents/Electronic Arts/The Sims 4/Mods",
+      "frameworks": [],
+      "paths": ["Mods"],
+      "rules": {"ts4script_max_depth": 1, "package_max_depth": 5},
+      "manager": "waystone",
+      "notes": ["Enable Custom Content and Mods in Game Options > Other, then restart.", "EA turns mods off after game updates: check for outdated script mods (error codes 102/123/125/127/129/131; 110 = outdated mod)."]
+    },
+    "minecraft": {
+      "titles": ["Minecraft: Java Edition", "Minecraft Java Edition"],
+      "native": true,
+      "sites": ["modrinth", "curseforge"],
+      "manager": "prism",
+      "manager_tool": "Prism Launcher (flatpak org.prismlauncher.PrismLauncher): one instance per modpack; Fabric for 1.14+, Forge up to 1.20.1, NeoForge above",
+      "notes": ["Never mix Forge, NeoForge and Fabric mods in one instance.", "Minecraft for Windows (Bedrock, Xbox) is a different game: Java mods do not work on it."]
+    },
+    "slimerancher": {
+      "titles": ["Slime Rancher"],
+      "steam_appid": "433340",
+      "nexus_domain": "slimerancher",
+      "install_root": "game",
+      "frameworks": [{"name": "SRML", "url": "https://github.com/SlimeRancherModding/SRML"}],
+      "launch_options": "WINEDLLOVERRIDES=\"winhttp=n,b\" %command%",
+      "launch_options_verified": false,
+      "manager": "waystone"
+    },
+    "slimerancher2": {
+      "titles": ["Slime Rancher 2"],
+      "steam_appid": "1657630",
+      "nexus_domain": "slimerancher2",
+      "install_root": "game",
+      "frameworks": [{"name": "MelonLoader 0.7.x (run the game once after installing)", "url": "https://melonwiki.xyz/"}],
+      "paths": ["Mods"],
+      "launch_options": "WINEDLLOVERRIDES=\"version=n,b\" %command%",
+      "launch_options_verified": false,
+      "manager": "waystone"
+    },
+    "subnautica": {
+      "titles": ["Subnautica"],
+      "steam_appid": "264710",
+      "nexus_domain": "subnautica",
+      "thunderstore": "subnautica",
+      "install_root": "game",
+      "frameworks": [
+        {"name": "BepInEx pack (5.4.23.x)", "nexus_id": 1108},
+        {"name": "Nautilus (modding API; Legacy branch uses SMLHelper)", "nexus_id": 1262}
+      ],
+      "paths": ["BepInEx/plugins"],
+      "launch_options": "WINEDLLOVERRIDES=\"winhttp=n,b\" %command%",
+      "manager": "waystone",
+      "notes": ["Check Options > Mods in game to confirm Nautilus loaded."]
+    },
+    "subnauticabelowzero": {
+      "titles": ["Subnautica: Below Zero"],
+      "steam_appid": "848450",
+      "nexus_domain": "subnauticabelowzero",
+      "thunderstore": "subnautica-below-zero",
+      "install_root": "game",
+      "frameworks": [
+        {"name": "BepInEx pack (Below Zero)", "url": "https://thunderstore.io/c/subnautica-below-zero/"},
+        {"name": "Nautilus", "url": "https://github.com/SubnauticaModding/Nautilus/releases"}
+      ],
+      "paths": ["BepInEx/plugins"],
+      "launch_options": "WINEDLLOVERRIDES=\"winhttp=n,b\" %command%",
+      "manager": "waystone"
+    }
+  }
+}

@@ -1,0 +1,40 @@
+<Styles xmlns="https://github.com/avaloniaui">
+  <Style Selector="Window"><Setter Property="Background" Value="{DynamicResource UcBg}"/><Setter Property="Foreground" Value="{DynamicResource UcText}"/></Style>
+  <Style Selector="Border.card"><Setter Property="Background" Value="{DynamicResource UcCard}"/><Setter Property="BorderBrush" Value="{DynamicResource UcCardBorder}"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="10"/><Setter Property="Padding" Value="14,11"/></Style>
+  <Style Selector="Border.cardAccent"><Setter Property="Background" Value="{DynamicResource UcAccent}"/><Setter Property="CornerRadius" Value="2"/><Setter Property="Width" Value="4"/><Setter Property="MinHeight" Value="18"/><Setter Property="Margin" Value="0,0,8,0"/></Style>
+  <Style Selector="Border.surfaceCard, Border.inspectorCard"><Setter Property="Background" Value="{DynamicResource UcCard}"/><Setter Property="BorderBrush" Value="{DynamicResource UcCardBorder}"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="ClipToBounds" Value="True"/></Style>
+  <Style Selector="Border.inspectorCard"><Setter Property="Padding" Value="10"/></Style>
+  <Style Selector="TextBlock.cardTitle"><Setter Property="FontSize" Value="15"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
+  <Style Selector="TextBlock.dim, TextBlock.muted"><Setter Property="Foreground" Value="{DynamicResource UcTextDim}"/><Setter Property="FontSize" Value="11"/></Style>
+  <Style Selector="TextBlock.hint"><Setter Property="Foreground" Value="{DynamicResource UcTextDim}"/><Setter Property="FontSize" Value="10"/><Setter Property="FontStyle" Value="Italic"/></Style>
+  <Style Selector="TextBox.value"><Setter Property="Width" Value="56"/><Setter Property="MinHeight" Value="30"/><Setter Property="Padding" Value="6,3"/><Setter Property="HorizontalContentAlignment" Value="Center"/><Setter Property="VerticalContentAlignment" Value="Center"/><Setter Property="FontFamily" Value="Monospace"/></Style>
+  <Style Selector="TextBlock.eyebrow"><Setter Property="Foreground" Value="{DynamicResource UcTextDim}"/><Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="Bold"/></Style>
+  <Style Selector="TextBlock.feedback"><Setter Property="Foreground" Value="{DynamicResource UcOk}"/></Style>
+  <Style Selector="TextBlock.selection"><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="TextWrapping" Value="Wrap"/><Setter Property="MinHeight" Value="38"/><Setter Property="Margin" Value="0,4,0,7"/></Style>
+  <Style Selector="TextBlock.live"><Setter Property="Foreground" Value="{DynamicResource UcAccent}"/><Setter Property="FontFamily" Value="Monospace"/><Setter Property="FontSize" Value="11"/></Style>
+  <Style Selector="Button.pill, ToggleButton.pill"><Setter Property="Background" Value="{DynamicResource UcButton}"/><Setter Property="Foreground" Value="{DynamicResource UcText}"/><Setter Property="CornerRadius" Value="16"/><Setter Property="Padding" Value="13,6"/><Setter Property="BorderThickness" Value="0"/></Style>
+  <Style Selector="ToggleButton.pill:checked"><Setter Property="Background" Value="{DynamicResource UcAccent}"/><Setter Property="Foreground" Value="White"/></Style>
+  <Style Selector="Button.accent"><Setter Property="Background" Value="{DynamicResource UcAccent}"/><Setter Property="Foreground" Value="White"/><Setter Property="CornerRadius" Value="7"/></Style>
+  <Style Selector="Button.danger"><Setter Property="Foreground" Value="#FFB4BC"/></Style>
+  <Style Selector="Slider.accent"><Setter Property="Foreground" Value="{DynamicResource UcAccent}"/><Setter Property="Height" Value="24"/></Style>
+  <Style Selector="Slider.accent /template/ Track"><Setter Property="Height" Value="4"/></Style>
+  <Style Selector="Slider.accent /template/ Thumb"><Setter Property="Width" Value="14"/><Setter Property="Height" Value="14"/><Setter Property="Background" Value="White"/><Setter Property="BorderBrush" Value="{DynamicResource UcAccent}"/><Setter Property="BorderThickness" Value="2"/><Setter Property="CornerRadius" Value="7"/></Style>
+  <Style Selector="Border.statusPill"><Setter Property="CornerRadius" Value="12"/><Setter Property="Padding" Value="10,4"/></Style>
+  <Style Selector="Border.statusOk"><Setter Property="Background" Value="#263CCB7F"/></Style>
+  <Style Selector="Border.statusWarn"><Setter Property="Background" Value="#26E0B23A"/></Style>
+  <Style Selector="Border.statusError"><Setter Property="Background" Value="#33E65C68"/></Style>
+  <Style Selector="GridSplitter"><Setter Property="Background" Value="{DynamicResource UcCardBorder}"/></Style>
+  <Style Selector="TabControl"><Setter Property="Background" Value="Transparent"/></Style>
+  <Style Selector="TabItem"><Setter Property="FontSize" Value="11"/><Setter Property="Padding" Value="12,6"/><Setter Property="Background" Value="{DynamicResource UcButton}"/></Style>
+  <Style Selector="TabItem:selected"><Setter Property="Background" Value="{DynamicResource UcAccent}"/><Setter Property="Foreground" Value="White"/></Style>
+  <Style Selector="DataGridColumnHeader"><Setter Property="Background" Value="{DynamicResource UcButton}"/><Setter Property="Foreground" Value="{DynamicResource UcTextDim}"/></Style>
+  <!-- Top-level page nav: centered pill tabs, selected pill filled with the accent (Deadband NavTab). -->
+  <Style Selector="TabControl.nav"><Setter Property="Padding" Value="0"/><Setter Property="ItemsPanel"><ItemsPanelTemplate><StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4"/></ItemsPanelTemplate></Setter></Style>
+  <Style Selector="TabControl.nav > TabItem"><Setter Property="FontSize" Value="13"/><Setter Property="FontWeight" Value="Normal"/><Setter Property="MinHeight" Value="34"/><Setter Property="Padding" Value="15,0"/><Setter Property="Margin" Value="0"/><Setter Property="CornerRadius" Value="9"/><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="{DynamicResource UcTextDim}"/></Style>
+  <Style Selector="TabControl.nav > TabItem /template/ Border#PART_SelectedPipe"><Setter Property="IsVisible" Value="False"/></Style>
+  <Style Selector="TabControl.nav > TabItem:pointerover /template/ Border#PART_LayoutRoot"><Setter Property="Background" Value="{DynamicResource UcButton}"/></Style>
+  <Style Selector="TabControl.nav > TabItem:pointerover"><Setter Property="Foreground" Value="{DynamicResource UcText}"/></Style>
+  <Style Selector="TabControl.nav > TabItem:selected /template/ Border#PART_LayoutRoot"><Setter Property="Background" Value="{DynamicResource UcAccent}"/></Style>
+  <Style Selector="TabControl.nav > TabItem:selected"><Setter Property="Foreground" Value="White"/></Style>
+  <Style Selector="TabControl.nav > TabItem:selected:pointerover /template/ Border#PART_LayoutRoot"><Setter Property="Background" Value="{DynamicResource UcAccent}"/></Style>
+</Styles>

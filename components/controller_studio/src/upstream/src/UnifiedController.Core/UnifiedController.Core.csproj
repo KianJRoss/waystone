@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../UnifiedController.App/Engine/NativeProfileRuntime.cs" Link="Engine/NativeProfileRuntime.cs" />
+    <Compile Include="../../UnifiedController.App/Engine/NativeMacroScheduler.cs" Link="Engine/NativeMacroScheduler.cs" />
+    <Compile Include="../../UnifiedController.App/Engine/NativeRouteEffectEngine.cs" Link="Engine/NativeRouteEffectEngine.cs" />
+    <Compile Include="../../UnifiedController.App/Engine/NativeRouteActivatorEngine.cs" Link="Engine/NativeRouteActivatorEngine.cs" />
+    <Compile Include="../../UnifiedController.App/Engine/NativeReportMerger.cs" Link="Engine/NativeReportMerger.cs" />
+    <Compile Include="../../UnifiedController.App/Engine/NativeSourceSelector.cs" Link="Engine/NativeSourceSelector.cs" />
+    <Compile Include="../../UnifiedController.App/Engine/NativeMotionStickMapper.cs" Link="Engine/NativeMotionStickMapper.cs" />
+    <Compile Include="../../UnifiedController.App/Engine/NativeMotionBearing.cs" Link="Engine/NativeMotionBearing.cs" />
+    <Compile Include="../../UnifiedController.App/Engine/NativeMotionCalibration.cs" Link="Engine/NativeMotionCalibration.cs" />
+    <Compile Include="../../UnifiedController.App/Engine/NativeDsuServer.cs" Link="Engine/NativeDsuServer.cs" />
+  </ItemGroup>
+  <ItemGroup><InternalsVisibleTo Include="UnifiedController.Core.Tests" /></ItemGroup>
+</Project>

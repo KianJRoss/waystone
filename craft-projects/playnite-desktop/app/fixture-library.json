@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "notice": "Synthetic UI fixtures; all launch recipes unverified text, never executable",
+  "games": [
+    {
+      "id": "demo-adventure",
+      "title": "Demo Adventure",
+      "variants": [
+        {
+          "source": "Steam",
+          "source_id": "1001",
+          "platform": "Linux",
+          "status": "installed",
+          "recipe": [
+            "steam",
+            "steam://rungameid/1001"
+          ],
+          "evidence": "Synthetic fixture, not a live host scan",
+          "installation_id": "fixture-installation-1001"
+        },
+        {
+          "source": "Heroic",
+          "source_id": "demo-adventure-gog",
+          "platform": "Windows",
+          "status": "unknown",
+          "recipe": [
+            "heroic",
+            "heroic://launch/gog/demo-adventure-gog"
+          ],
+          "evidence": "Synthetic fixture, not a live host scan",
+          "installation_id": "fixture-installation-demo-adventure-gog"
+        }
+      ]
+    },
+    {
+      "id": "demo-adventure-remaster",
+      "title": "Demo Adventure",
+      "variants": [
+        {
+          "source": "Lutris",
+          "source_id": "2002",
+          "platform": "Windows",
+          "status": "not-installed",
+          "recipe": [
+            "lutris",
+            "lutris:rungameid/2002"
+          ],
+          "evidence": "Synthetic fixture, not a live host scan",
+          "installation_id": "fixture-installation-2002"
+        }
+      ]
+    },
+    {
+      "id": "demo-island",
+      "title": "Demo Island",
+      "variants": [
+        {
+          "source": "Lichii",
+          "source_id": "rom-fixture-1",
+          "platform": "Switch",
+          "status": "unknown",
+          "recipe": [
+            "lichii",
+            "/fixture-only/roms/Demo Island.xci"
+          ],
+          "evidence": "Synthetic fixture, not a live host scan",
+          "installation_id": "fixture-installation-rom-fixture-1"
+        }
+      ]
+    },
+    {
+      "id": "demo-racing",
+      "title": "Demo Racing",
+      "variants": [
+        {
+          "source": "Dolphin",
+          "source_id": "rom-fixture-2",
+          "platform": "GameCube",
+          "status": "installed",
+          "recipe": [
+            "dolphin-emu",
+            "-e",
+            "/fixture-only/roms/Demo Racing.iso"
+          ],
+          "evidence": "Synthetic fixture, not a live host scan",
+          "installation_id": "fixture-installation-rom-fixture-2"
+        }
+      ]
+    },
+    {
+      "id": "demo-builder",
+      "title": "Demo Builder",
+      "variants": [
+        {
+          "source": "Prism",
+          "source_id": "instance-fixture-1",
+          "platform": "Java",
+          "status": "unknown",
+          "recipe": [
+            "prismlauncher",
+            "--launch",
+            "fixture instance"
+          ],
+          "evidence": "Synthetic fixture, not a live host scan",
+          "installation_id": "fixture-installation-instance-fixture-1"
+        }
+      ]
+    },
+    {
+      "id": "demo-wiiu",
+      "title": "Demo Console Adventure",
+      "variants": [
+        {
+          "source": "Cemu",
+          "source_id": "rom-fixture-3",
+          "platform": "Wii U",
+          "status": "unknown",
+          "recipe": [
+            "cemu",
+            "-g",
+            "/fixture-only/roms/Demo.wua"
+          ],
+          "evidence": "Synthetic fixture, not a live host scan",
+          "installation_id": "fixture-installation-rom-fixture-3"
+        }
+      ]
+    },
+    {
+      "id": "demo-retro",
+      "title": "Demo Retro",
+      "variants": [
+        {
+          "source": "RetroArch",
+          "source_id": "rom-fixture-4",
+          "platform": "SNES",
+          "status": "installed",
+          "recipe": [
+            "retroarch",
+            "-L",
+            "/fixture-only/cores/demo.so",
+            "/fixture-only/roms/Demo.sfc"
+          ],
+          "evidence": "Synthetic fixture, not a live host scan",
+          "installation_id": "fixture-installation-rom-fixture-4"
+        }
+      ]
+    },
+    {
+      "id": "demo-nexus",
+      "title": "Demo Store Game",
+      "variants": [
+        {
+          "source": "Xodus Nexus",
+          "source_id": "fixture-store-id",
+          "platform": "Windows",
+          "status": "unknown",
+          "recipe": [
+            "/fixture-only/xodus-wrapper",
+            "fixture-store-id"
+          ],
+          "evidence": "Synthetic fixture, not a live host scan",
+          "installation_id": "fixture-installation-fixture-store-id"
+        }
+      ]
+    }
+  ]
+}

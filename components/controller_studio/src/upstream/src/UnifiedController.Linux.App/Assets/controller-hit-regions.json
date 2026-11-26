@@ -1,0 +1,136 @@
+{
+  "width": 520,
+  "height": 360,
+  "imageOffset": [
+    20,
+    20
+  ],
+  "regions": [
+    {
+      "source": "Controller:LT",
+      "x": 106.0,
+      "y": 34.0,
+      "width": 52.0,
+      "height": 30.0
+    },
+    {
+      "source": "Controller:RT",
+      "x": 366.0,
+      "y": 34.0,
+      "width": 52.0,
+      "height": 30.0
+    },
+    {
+      "source": "Controller:LB",
+      "x": 95.0,
+      "y": 64.0,
+      "width": 104.0,
+      "height": 33.0
+    },
+    {
+      "source": "Controller:RB",
+      "x": 324.0,
+      "y": 64.0,
+      "width": 104.0,
+      "height": 33.0
+    },
+    {
+      "source": "Controller:Home",
+      "x": 245.0,
+      "y": 121.0,
+      "width": 30.0,
+      "height": 30.0
+    },
+    {
+      "source": "Controller:View",
+      "x": 216.0,
+      "y": 149.0,
+      "width": 24.0,
+      "height": 24.0
+    },
+    {
+      "source": "Controller:Share",
+      "x": 249.0,
+      "y": 170.0,
+      "width": 22.0,
+      "height": 22.0
+    },
+    {
+      "source": "Controller:Menu",
+      "x": 283.0,
+      "y": 149.0,
+      "width": 24.0,
+      "height": 24.0
+    },
+    {
+      "source": "Controller:Y",
+      "x": 365.0,
+      "y": 114.0,
+      "width": 32.0,
+      "height": 32.0
+    },
+    {
+      "source": "Controller:X",
+      "x": 333.0,
+      "y": 144.0,
+      "width": 32.0,
+      "height": 32.0
+    },
+    {
+      "source": "Controller:B",
+      "x": 396.0,
+      "y": 142.0,
+      "width": 32.0,
+      "height": 32.0
+    },
+    {
+      "source": "Controller:A",
+      "x": 364.0,
+      "y": 172.0,
+      "width": 32.0,
+      "height": 32.0
+    },
+    {
+      "source": "Controller:Left Stick",
+      "x": 114.0,
+      "y": 135.0,
+      "width": 60.0,
+      "height": 60.0
+    },
+    {
+      "source": "Controller:Right Stick",
+      "x": 292.0,
+      "y": 201.0,
+      "width": 60.0,
+      "height": 60.0
+    },
+    {
+      "source": "Controller:D-pad Up",
+      "x": 190.0,
+      "y": 196.0,
+      "width": 24.0,
+      "height": 24.0
+    },
+    {
+      "source": "Controller:D-pad Left",
+      "x": 170.0,
+      "y": 216.0,
+      "width": 24.0,
+      "height": 24.0
+    },
+    {
+      "source": "Controller:D-pad Right",
+      "x": 210.0,
+      "y": 216.0,
+      "width": 24.0,
+      "height": 24.0
+    },
+    {
+      "source": "Controller:D-pad Down",
+      "x": 190.0,
+      "y": 236.0,
+      "width": 24.0,
+      "height": 24.0
+    }
+  ]
+}

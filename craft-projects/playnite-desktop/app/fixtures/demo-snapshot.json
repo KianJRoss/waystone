@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "source": {
+    "provider": "steam",
+    "instance": "synthetic-only",
+    "host": "fixture-host",
+    "scope": "installed-manifests:bcc6e4b657471a4c0e123b045355efaadb92e8acd06c8c5590f93bf1748d66ca",
+    "root": "/fixture/linux-game-library/adapters/steam/steam-fixture-gixzhm1j/steam",
+    "adapter_version": "steam-local-manifests/0.1"
+  },
+  "observed_at": "2026-11-14T21:23:28.302229+00:00",
+  "availability": "online",
+  "complete": true,
+  "records": [
+    {
+      "record_key": "ff4b1793f9f152651b71d3a4463ed33341d2c36bbcf4d8e5ea2670329a864162",
+      "variant_key": "16810920f6f38ab701da469ef75147b3ed6ebc85a8a29ec2d1437f4c281c5680",
+      "external_id": "123",
+      "installation_id": "fixture-volume-b",
+      "kind": "unknown",
+      "title": "Synthetic Adventure (second copy)",
+      "installation_state": "declared-installed",
+      "payload_presence": "missing",
+      "platform": "unknown",
+      "evidence": {
+        "kind": "manifest-declaration",
+        "locator": "/fixture/linux-game-library/adapters/steam/steam-fixture-gixzhm1j/volume-b/steamapps/appmanifest_123.acf",
+        "sha256": "a94e8a97fef1dcd03fecf21729e7737a5e5327ee88f6a444813bd42267900723",
+        "size_bytes": 123,
+        "mtime_ns": 1794691408302026708,
+        "mode": 384,
+        "field_locators": [
+          "AppState/appid",
+          "AppState/name",
+          "AppState/StateFlags",
+          "AppState/installdir"
+        ],
+        "verification_scope": "manifest declaration plus directory existence only; not payload integrity, executable viability or gameplay"
+      },
+      "recipe": null
+    },
+    {
+      "record_key": "ff4b1793f9f152651b71d3a4463ed33341d2c36bbcf4d8e5ea2670329a864162",
+      "variant_key": "9e985c5b6374e5de804d0db73766156af51869e4f13faf956a32f80ae86eb05c",
+      "external_id": "123",
+      "installation_id": "fixture-main",
+      "kind": "unknown",
+      "title": "Synthetic Adventure",
+      "installation_state": "declared-installed",
+      "payload_presence": "directory-present",
+      "platform": "unknown",
+      "evidence": {
+        "kind": "manifest-declaration",
+        "locator": "/fixture/linux-game-library/adapters/steam/steam-fixture-gixzhm1j/steam/steamapps/appmanifest_123.acf",
+        "sha256": "5150e936dbfd3151105967ce732e7d17c9312494506446ba057725a2d6210e97",
+        "size_bytes": 109,
+        "mtime_ns": 1794691408301959681,
+        "mode": 384,
+        "field_locators": [
+          "AppState/appid",
+          "AppState/name",
+          "AppState/StateFlags",
+          "AppState/installdir"
+        ],
+        "verification_scope": "manifest declaration plus directory existence only; not payload integrity, executable viability or gameplay"
+      },
+      "recipe": null
+    },
+    {
+      "record_key": "acacc5054848b470a20d1860d2a4ed29d6bc6dbfd7f7ece402f1fe7bdcad8d1b",
+      "variant_key": "cf7970950868e79b8ee7c74bcf27d2672e6ca40cfb10b16751dfd99f1374de27",
+      "external_id": "456",
+      "installation_id": "fixture-main",
+      "kind": "unknown",
+      "title": "Synthetic Registered Entry",
+      "installation_state": "registered",
+      "payload_presence": "directory-present",
+      "platform": "unknown",
+      "evidence": {
+        "kind": "manifest-declaration",
+        "locator": "/fixture/linux-game-library/adapters/steam/steam-fixture-gixzhm1j/steam/steamapps/appmanifest_456.acf",
+        "sha256": "a7f6650bdd2e1d47813208d9e5fb3b986805be09ec91467742708efdee5ab905",
+        "size_bytes": 116,
+        "mtime_ns": 1794691408302088336,
+        "mode": 384,
+        "field_locators": [
+          "AppState/appid",
+          "AppState/name",
+          "AppState/StateFlags",
+          "AppState/installdir"
+        ],
+        "verification_scope": "manifest declaration plus directory existence only; not payload integrity, executable viability or gameplay"
+      },
+      "recipe": null
+    }
+  ],
+  "libraries": [
+    {
+      "installation_id": "fixture-main",
+      "path": "/fixture/linux-game-library/adapters/steam/steam-fixture-gixzhm1j/steam",
+      "availability": "online",
+      "complete": true
+    },
+    {
+      "installation_id": "fixture-volume-b",
+      "path": "/fixture/linux-game-library/adapters/steam/steam-fixture-gixzhm1j/volume-b",
+      "availability": "online",
+      "complete": true
+    }
+  ],
+  "errors": [],
+  "fixture_mode": true,
+  "libraryfolders_evidence": {
+    "kind": "manifest-declaration",
+    "locator": "/fixture/linux-game-library/adapters/steam/steam-fixture-gixzhm1j/steam/steamapps/libraryfolders.vdf",
+    "sha256": "32fed023aadfa658ac23cda962bc64590d3d8cf8066ae5c83da3569ff24f65a0",
+    "size_bytes": 234,
+    "mtime_ns": 1794691408301863107,
+    "mode": 384
+  }
+}

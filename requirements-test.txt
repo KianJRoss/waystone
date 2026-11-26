@@ -1,0 +1,8 @@
+# Test toolset for Waystone (the live app's Python already has these). Run from the repo root:
+#   QT_QPA_PLATFORM=offscreen uv run --with-requirements requirements-test.txt python -m pytest -q tests craft-projects/playnite-desktop/app
+pytest
+mcp
+pyside6==6.12.0
+pyyaml
+pillow
+httpx

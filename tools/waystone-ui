@@ -1,0 +1,15 @@
+#!/bin/sh
+# UI-only activation: never launches a second app or starts a game/party.
+case "${1:-overlay}" in
+ overlay) method=ToggleOverlay ;;
+ library) method=ShowLibrary ;;
+ organizer) method=ShowOrganizer ;;
+ platforms) method=ShowPlatforms ;;
+ friends) method=ShowFriends ;;
+ achievements) method=ShowAchievements ;;
+ console) method=ShowConsole ;;
+ controllers) method=ShowControllers ;;
+ downloads) method=ShowDownloads ;;
+ *) echo 'Usage: waystone-ui [overlay|library|organizer|platforms|friends|achievements|console|controllers|downloads]' >&2; exit 2 ;;
+esac
+exec busctl --user --timeout=3 call io.waystone.Library /io/waystone/Library io.waystone.Library.UI "$method"

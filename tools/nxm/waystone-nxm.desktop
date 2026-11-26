@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Waystone (Nexus downloads)
+Exec=waystone-nxm %u
+MimeType=x-scheme-handler/nxm;
+NoDisplay=true
+Terminal=false

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Waystone
+Comment=Your games, launchers, and controllers in one place
+Exec=waystone
+Icon=waystone
+Terminal=false
+Type=Application
+Categories=Game;
+StartupNotify=true

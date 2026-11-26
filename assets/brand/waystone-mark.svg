@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Waystone">
+  <!-- Waystone mark "Tall three": three jagged stones balanced into a cairn (approved by Kian 2026-11-24). -->
+  <polygon points="22,90 26,74 46,68 70,71 78,86 60,93" fill="#3b3b3b"/>
+  <polygon points="26,74 46,68 70,71 52,75" fill="#5a5a57"/>
+  <polygon points="52,75 70,71 78,86 60,93" fill="#2a2a2a"/>
+  <polygon points="38,70 34,54 50,44 64,50 62,68" fill="#6a6a66"/>
+  <polygon points="34,54 50,44 64,50 50,55" fill="#9a9a96"/>
+  <polygon points="50,55 64,50 62,68 52,66" fill="#4a4a48"/>
+  <polygon points="44,46 46,32 54,18 60,28 58,44" fill="#b4b4af"/>
+  <polygon points="46,32 54,18 60,28 53,31" fill="#ededea"/>
+  <polygon points="53,31 60,28 58,44 52,42" fill="#8a8a86"/>
+</svg>

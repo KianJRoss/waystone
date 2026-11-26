@@ -1,0 +1,972 @@
+{
+  "schema_version": 2,
+  "catalog_kind": "playnite-display-selected-copy-v1",
+  "provenance": {
+    "fixture_only": true,
+    "generator": "tools/render_readme_screenshots.py",
+    "network_used": false,
+    "user_data_used": false
+  },
+  "games": [
+    {
+      "id": "demo:aetherwake",
+      "title": "Aetherwake",
+      "variants": [
+        {
+          "source": "Steam",
+          "source_id": "demo-aetherwake",
+          "installation_id": "demo-install-aetherwake",
+          "platform": "Linux",
+          "status": "installed",
+          "recipe": [],
+          "metadata": {
+            "genre": "Skybound exploration",
+            "release_date": "2024-06-15",
+            "developer": "Small Orbit Studio",
+            "publisher": "Waystone Demo Press",
+            "description": "A fictional demo title: skybound exploration."
+          },
+          "source_context": {
+            "host": "Synthetic demo"
+          },
+          "observation": {
+            "at": "2026-11-25T00:00:00Z"
+          },
+          "evidence": {
+            "kind": "synthetic-fixture",
+            "detail": "No real account, installation, ROM, or game record."
+          },
+          "artwork": {
+            "cover": {
+              "status": "local_present",
+              "relative_reference": "covers/aetherwake.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "background": {
+              "status": "local_present",
+              "relative_reference": "heroes/aetherwake.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "icon": {
+              "status": "local_present",
+              "relative_reference": "logos/aetherwake.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "demo:mosslight",
+      "title": "Mosslight",
+      "variants": [
+        {
+          "source": "GOG",
+          "source_id": "demo-mosslight",
+          "installation_id": "demo-install-mosslight",
+          "platform": "Linux",
+          "status": "installed",
+          "recipe": [],
+          "metadata": {
+            "genre": "A quiet forest mystery",
+            "release_date": "2024-06-15",
+            "developer": "Small Orbit Studio",
+            "publisher": "Waystone Demo Press",
+            "description": "A fictional demo title: a quiet forest mystery."
+          },
+          "source_context": {
+            "host": "Synthetic demo"
+          },
+          "observation": {
+            "at": "2026-11-25T00:00:00Z"
+          },
+          "evidence": {
+            "kind": "synthetic-fixture",
+            "detail": "No real account, installation, ROM, or game record."
+          },
+          "artwork": {
+            "cover": {
+              "status": "local_present",
+              "relative_reference": "covers/mosslight.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "background": {
+              "status": "local_present",
+              "relative_reference": "heroes/mosslight.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "icon": {
+              "status": "local_present",
+              "relative_reference": "logos/mosslight.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "demo:copper-coast",
+      "title": "Copper Coast",
+      "variants": [
+        {
+          "source": "Epic",
+          "source_id": "demo-copper-coast",
+          "installation_id": "demo-install-copper-coast",
+          "platform": "Windows",
+          "status": "installed",
+          "recipe": [],
+          "metadata": {
+            "genre": "Coastal town builder",
+            "release_date": "2024-06-15",
+            "developer": "Small Orbit Studio",
+            "publisher": "Waystone Demo Press",
+            "description": "A fictional demo title: coastal town builder."
+          },
+          "source_context": {
+            "host": "Synthetic demo"
+          },
+          "observation": {
+            "at": "2026-11-25T00:00:00Z"
+          },
+          "evidence": {
+            "kind": "synthetic-fixture",
+            "detail": "No real account, installation, ROM, or game record."
+          },
+          "artwork": {
+            "cover": {
+              "status": "local_present",
+              "relative_reference": "covers/copper-coast.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "background": {
+              "status": "local_present",
+              "relative_reference": "heroes/copper-coast.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "icon": {
+              "status": "local_present",
+              "relative_reference": "logos/copper-coast.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "demo:starling-run",
+      "title": "Starling Run",
+      "variants": [
+        {
+          "source": "ROM Library",
+          "source_id": "demo-starling-run",
+          "installation_id": "demo-install-starling-run",
+          "platform": "SNES",
+          "status": "installed",
+          "recipe": [],
+          "metadata": {
+            "genre": "Pixel-art platform adventure",
+            "release_date": "2024-06-15",
+            "developer": "Small Orbit Studio",
+            "publisher": "Waystone Demo Press",
+            "description": "A fictional demo title: pixel-art platform adventure."
+          },
+          "source_context": {
+            "host": "Synthetic demo"
+          },
+          "observation": {
+            "at": "2026-11-25T00:00:00Z"
+          },
+          "evidence": {
+            "kind": "synthetic-fixture",
+            "detail": "No real account, installation, ROM, or game record."
+          },
+          "artwork": {
+            "cover": {
+              "status": "local_present",
+              "relative_reference": "covers/starling-run.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "background": {
+              "status": "local_present",
+              "relative_reference": "heroes/starling-run.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "icon": {
+              "status": "local_present",
+              "relative_reference": "logos/starling-run.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "demo:glass-orbit",
+      "title": "Glass Orbit",
+      "variants": [
+        {
+          "source": "Steam",
+          "source_id": "demo-glass-orbit",
+          "installation_id": "demo-install-glass-orbit",
+          "platform": "Linux",
+          "status": "installed",
+          "recipe": [],
+          "metadata": {
+            "genre": "A small-scale space opera",
+            "release_date": "2024-06-15",
+            "developer": "Small Orbit Studio",
+            "publisher": "Waystone Demo Press",
+            "description": "A fictional demo title: a small-scale space opera."
+          },
+          "source_context": {
+            "host": "Synthetic demo"
+          },
+          "observation": {
+            "at": "2026-11-25T00:00:00Z"
+          },
+          "evidence": {
+            "kind": "synthetic-fixture",
+            "detail": "No real account, installation, ROM, or game record."
+          },
+          "artwork": {
+            "cover": {
+              "status": "local_present",
+              "relative_reference": "covers/glass-orbit.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "background": {
+              "status": "local_present",
+              "relative_reference": "heroes/glass-orbit.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "icon": {
+              "status": "local_present",
+              "relative_reference": "logos/glass-orbit.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "demo:wildermere",
+      "title": "Wildermere",
+      "variants": [
+        {
+          "source": "GOG",
+          "source_id": "demo-wildermere",
+          "installation_id": "demo-install-wildermere",
+          "platform": "Linux",
+          "status": "installed",
+          "recipe": [],
+          "metadata": {
+            "genre": "Folklore and wild gardens",
+            "release_date": "2024-06-15",
+            "developer": "Small Orbit Studio",
+            "publisher": "Waystone Demo Press",
+            "description": "A fictional demo title: folklore and wild gardens."
+          },
+          "source_context": {
+            "host": "Synthetic demo"
+          },
+          "observation": {
+            "at": "2026-11-25T00:00:00Z"
+          },
+          "evidence": {
+            "kind": "synthetic-fixture",
+            "detail": "No real account, installation, ROM, or game record."
+          },
+          "artwork": {
+            "cover": {
+              "status": "local_present",
+              "relative_reference": "covers/wildermere.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "background": {
+              "status": "local_present",
+              "relative_reference": "heroes/wildermere.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "icon": {
+              "status": "local_present",
+              "relative_reference": "logos/wildermere.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "demo:tidelock",
+      "title": "Tidelock",
+      "variants": [
+        {
+          "source": "Epic",
+          "source_id": "demo-tidelock",
+          "installation_id": "demo-install-tidelock",
+          "platform": "Windows",
+          "status": "installed",
+          "recipe": [],
+          "metadata": {
+            "genre": "An underwater puzzle journey",
+            "release_date": "2024-06-15",
+            "developer": "Small Orbit Studio",
+            "publisher": "Waystone Demo Press",
+            "description": "A fictional demo title: an underwater puzzle journey."
+          },
+          "source_context": {
+            "host": "Synthetic demo"
+          },
+          "observation": {
+            "at": "2026-11-25T00:00:00Z"
+          },
+          "evidence": {
+            "kind": "synthetic-fixture",
+            "detail": "No real account, installation, ROM, or game record."
+          },
+          "artwork": {
+            "cover": {
+              "status": "local_present",
+              "relative_reference": "covers/tidelock.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "background": {
+              "status": "local_present",
+              "relative_reference": "heroes/tidelock.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "icon": {
+              "status": "local_present",
+              "relative_reference": "logos/tidelock.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "demo:ember-post",
+      "title": "Ember Post",
+      "variants": [
+        {
+          "source": "ROM Library",
+          "source_id": "demo-ember-post",
+          "installation_id": "demo-install-ember-post",
+          "platform": "GameCube",
+          "status": "installed",
+          "recipe": [],
+          "metadata": {
+            "genre": "A courier's island story",
+            "release_date": "2024-06-15",
+            "developer": "Small Orbit Studio",
+            "publisher": "Waystone Demo Press",
+            "description": "A fictional demo title: a courier's island story."
+          },
+          "source_context": {
+            "host": "Synthetic demo"
+          },
+          "observation": {
+            "at": "2026-11-25T00:00:00Z"
+          },
+          "evidence": {
+            "kind": "synthetic-fixture",
+            "detail": "No real account, installation, ROM, or game record."
+          },
+          "artwork": {
+            "cover": {
+              "status": "local_present",
+              "relative_reference": "covers/ember-post.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "background": {
+              "status": "local_present",
+              "relative_reference": "heroes/ember-post.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "icon": {
+              "status": "local_present",
+              "relative_reference": "logos/ember-post.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "demo:frostline",
+      "title": "Frostline Archive",
+      "variants": [
+        {
+          "source": "Steam",
+          "source_id": "demo-frostline",
+          "installation_id": "demo-install-frostline",
+          "platform": "Linux",
+          "status": "not-installed",
+          "recipe": [],
+          "metadata": {
+            "genre": "A cold-climate investigation",
+            "release_date": "2024-06-15",
+            "developer": "Small Orbit Studio",
+            "publisher": "Waystone Demo Press",
+            "description": "A fictional demo title: a cold-climate investigation."
+          },
+          "source_context": {
+            "host": "Synthetic demo"
+          },
+          "observation": {
+            "at": "2026-11-25T00:00:00Z"
+          },
+          "evidence": {
+            "kind": "synthetic-fixture",
+            "detail": "No real account, installation, ROM, or game record."
+          },
+          "artwork": {
+            "cover": {
+              "status": "local_present",
+              "relative_reference": "covers/frostline.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "background": {
+              "status": "local_present",
+              "relative_reference": "heroes/frostline.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "icon": {
+              "status": "local_present",
+              "relative_reference": "logos/frostline.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "demo:lumen-fields",
+      "title": "Lumen Fields",
+      "variants": [
+        {
+          "source": "GOG",
+          "source_id": "demo-lumen-fields",
+          "installation_id": "demo-install-lumen-fields",
+          "platform": "Linux",
+          "status": "installed",
+          "recipe": [],
+          "metadata": {
+            "genre": "A warm, tiny farming sim",
+            "release_date": "2024-06-15",
+            "developer": "Small Orbit Studio",
+            "publisher": "Waystone Demo Press",
+            "description": "A fictional demo title: a warm, tiny farming sim."
+          },
+          "source_context": {
+            "host": "Synthetic demo"
+          },
+          "observation": {
+            "at": "2026-11-25T00:00:00Z"
+          },
+          "evidence": {
+            "kind": "synthetic-fixture",
+            "detail": "No real account, installation, ROM, or game record."
+          },
+          "artwork": {
+            "cover": {
+              "status": "local_present",
+              "relative_reference": "covers/lumen-fields.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "background": {
+              "status": "local_present",
+              "relative_reference": "heroes/lumen-fields.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "icon": {
+              "status": "local_present",
+              "relative_reference": "logos/lumen-fields.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "demo:quiet-engine",
+      "title": "The Quiet Engine",
+      "variants": [
+        {
+          "source": "Epic",
+          "source_id": "demo-quiet-engine",
+          "installation_id": "demo-install-quiet-engine",
+          "platform": "Windows",
+          "status": "not-installed",
+          "recipe": [],
+          "metadata": {
+            "genre": "A clockwork platform puzzler",
+            "release_date": "2024-06-15",
+            "developer": "Small Orbit Studio",
+            "publisher": "Waystone Demo Press",
+            "description": "A fictional demo title: a clockwork platform puzzler."
+          },
+          "source_context": {
+            "host": "Synthetic demo"
+          },
+          "observation": {
+            "at": "2026-11-25T00:00:00Z"
+          },
+          "evidence": {
+            "kind": "synthetic-fixture",
+            "detail": "No real account, installation, ROM, or game record."
+          },
+          "artwork": {
+            "cover": {
+              "status": "local_present",
+              "relative_reference": "covers/quiet-engine.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "background": {
+              "status": "local_present",
+              "relative_reference": "heroes/quiet-engine.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "icon": {
+              "status": "local_present",
+              "relative_reference": "logos/quiet-engine.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "demo:velvet-comet",
+      "title": "Velvet Comet",
+      "variants": [
+        {
+          "source": "ROM Library",
+          "source_id": "demo-velvet-comet",
+          "installation_id": "demo-install-velvet-comet",
+          "platform": "Handheld",
+          "status": "installed",
+          "recipe": [],
+          "metadata": {
+            "genre": "A pocket-sized rhythm quest",
+            "release_date": "2024-06-15",
+            "developer": "Small Orbit Studio",
+            "publisher": "Waystone Demo Press",
+            "description": "A fictional demo title: a pocket-sized rhythm quest."
+          },
+          "source_context": {
+            "host": "Synthetic demo"
+          },
+          "observation": {
+            "at": "2026-11-25T00:00:00Z"
+          },
+          "evidence": {
+            "kind": "synthetic-fixture",
+            "detail": "No real account, installation, ROM, or game record."
+          },
+          "artwork": {
+            "cover": {
+              "status": "local_present",
+              "relative_reference": "covers/velvet-comet.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "background": {
+              "status": "local_present",
+              "relative_reference": "heroes/velvet-comet.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "icon": {
+              "status": "local_present",
+              "relative_reference": "logos/velvet-comet.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "demo:blue-hour",
+      "title": "Blue Hour Atlas",
+      "variants": [
+        {
+          "source": "Steam",
+          "source_id": "demo-blue-hour",
+          "installation_id": "demo-install-blue-hour",
+          "platform": "Linux",
+          "status": "installed",
+          "recipe": [],
+          "metadata": {
+            "genre": "An illustrated route planner",
+            "release_date": "2024-06-15",
+            "developer": "Small Orbit Studio",
+            "publisher": "Waystone Demo Press",
+            "description": "A fictional demo title: an illustrated route planner."
+          },
+          "source_context": {
+            "host": "Synthetic demo"
+          },
+          "observation": {
+            "at": "2026-11-25T00:00:00Z"
+          },
+          "evidence": {
+            "kind": "synthetic-fixture",
+            "detail": "No real account, installation, ROM, or game record."
+          },
+          "artwork": {
+            "cover": {
+              "status": "local_present",
+              "relative_reference": "covers/blue-hour.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "background": {
+              "status": "local_present",
+              "relative_reference": "heroes/blue-hour.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "icon": {
+              "status": "local_present",
+              "relative_reference": "logos/blue-hour.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "demo:cairn-circuit",
+      "title": "Cairn Circuit",
+      "variants": [
+        {
+          "source": "GOG",
+          "source_id": "demo-cairn-circuit",
+          "installation_id": "demo-install-cairn-circuit",
+          "platform": "Linux",
+          "status": "not-installed",
+          "recipe": [],
+          "metadata": {
+            "genre": "A mountain racing game",
+            "release_date": "2024-06-15",
+            "developer": "Small Orbit Studio",
+            "publisher": "Waystone Demo Press",
+            "description": "A fictional demo title: a mountain racing game."
+          },
+          "source_context": {
+            "host": "Synthetic demo"
+          },
+          "observation": {
+            "at": "2026-11-25T00:00:00Z"
+          },
+          "evidence": {
+            "kind": "synthetic-fixture",
+            "detail": "No real account, installation, ROM, or game record."
+          },
+          "artwork": {
+            "cover": {
+              "status": "local_present",
+              "relative_reference": "covers/cairn-circuit.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "background": {
+              "status": "local_present",
+              "relative_reference": "heroes/cairn-circuit.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "icon": {
+              "status": "local_present",
+              "relative_reference": "logos/cairn-circuit.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "demo:sunken-signal",
+      "title": "Sunken Signal",
+      "variants": [
+        {
+          "source": "Epic",
+          "source_id": "demo-sunken-signal",
+          "installation_id": "demo-install-sunken-signal",
+          "platform": "Windows",
+          "status": "installed",
+          "recipe": [],
+          "metadata": {
+            "genre": "A deep-sea radio drama",
+            "release_date": "2024-06-15",
+            "developer": "Small Orbit Studio",
+            "publisher": "Waystone Demo Press",
+            "description": "A fictional demo title: a deep-sea radio drama."
+          },
+          "source_context": {
+            "host": "Synthetic demo"
+          },
+          "observation": {
+            "at": "2026-11-25T00:00:00Z"
+          },
+          "evidence": {
+            "kind": "synthetic-fixture",
+            "detail": "No real account, installation, ROM, or game record."
+          },
+          "artwork": {
+            "cover": {
+              "status": "local_present",
+              "relative_reference": "covers/sunken-signal.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "background": {
+              "status": "local_present",
+              "relative_reference": "heroes/sunken-signal.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "icon": {
+              "status": "local_present",
+              "relative_reference": "logos/sunken-signal.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "demo:paper-kingdom",
+      "title": "Paper Kingdoms",
+      "variants": [
+        {
+          "source": "ROM Library",
+          "source_id": "demo-paper-kingdom",
+          "installation_id": "demo-install-paper-kingdom",
+          "platform": "NES",
+          "status": "installed",
+          "recipe": [],
+          "metadata": {
+            "genre": "A folded-paper tactics game",
+            "release_date": "2024-06-15",
+            "developer": "Small Orbit Studio",
+            "publisher": "Waystone Demo Press",
+            "description": "A fictional demo title: a folded-paper tactics game."
+          },
+          "source_context": {
+            "host": "Synthetic demo"
+          },
+          "observation": {
+            "at": "2026-11-25T00:00:00Z"
+          },
+          "evidence": {
+            "kind": "synthetic-fixture",
+            "detail": "No real account, installation, ROM, or game record."
+          },
+          "artwork": {
+            "cover": {
+              "status": "local_present",
+              "relative_reference": "covers/paper-kingdom.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "background": {
+              "status": "local_present",
+              "relative_reference": "heroes/paper-kingdom.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            },
+            "icon": {
+              "status": "local_present",
+              "relative_reference": "logos/paper-kingdom.png",
+              "role_source": "waystone-readme-demo-generator",
+              "provenance": {
+                "same_generation_verified": true,
+                "fixture_only": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

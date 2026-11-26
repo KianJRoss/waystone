@@ -1,0 +1,166 @@
+{
+  "version": 1,
+  "kind": "desktop-library-ui",
+  "values": [
+    {
+      "name": "toolbar height",
+      "group": "layout",
+      "value": 50,
+      "unit": "px",
+      "source": "Views/TopPanel.xaml Border Height=50"
+    },
+    {
+      "name": "preferred search width",
+      "group": "layout",
+      "value": 300,
+      "unit": "px",
+      "source": "Views/TopPanel.xaml PART_TextMainSearch Width=300"
+    },
+    {
+      "name": "rail width",
+      "group": "layout",
+      "value": 44,
+      "unit": "px",
+      "source": "Views/Sidebar.xaml main menu Width=44"
+    },
+    {
+      "name": "secondary text",
+      "group": "typography",
+      "value": 12,
+      "unit": "px",
+      "source": "Constants.xaml FontSizeSmall"
+    },
+    {
+      "name": "standard text",
+      "group": "typography",
+      "value": 14,
+      "unit": "px",
+      "source": "Constants.xaml FontSize"
+    },
+    {
+      "name": "details title",
+      "group": "typography",
+      "value": 20,
+      "unit": "px",
+      "source": "Constants.xaml FontSizeLarger"
+    },
+    {
+      "name": "corner radius",
+      "group": "layout",
+      "value": 1,
+      "unit": "px",
+      "source": "Constants.xaml ControlCornerRadius"
+    },
+    {
+      "name": "background",
+      "group": "palette",
+      "value": "#0D1225",
+      "source": "Constants.xaml MainColorDark"
+    },
+    {
+      "name": "selection",
+      "group": "palette",
+      "value": "#2C3A67",
+      "source": "Constants.xaml MainColor"
+    },
+    {
+      "name": "glyph",
+      "group": "palette",
+      "value": "#55CDFF",
+      "source": "Constants.xaml GlyphColor"
+    },
+    {
+      "name": "explorer width",
+      "group": "layout",
+      "value": 195,
+      "unit": "px",
+      "estimated": true
+    },
+    {
+      "name": "filter width",
+      "group": "layout",
+      "value": 220,
+      "unit": "px",
+      "estimated": true
+    },
+    {
+      "name": "inspector width",
+      "group": "layout",
+      "value": 300,
+      "unit": "px",
+      "estimated": true
+    },
+    {
+      "name": "details list width",
+      "group": "layout",
+      "value": 255,
+      "unit": "px",
+      "estimated": true
+    },
+    {
+      "name": "cover width",
+      "group": "grid",
+      "value": 126,
+      "unit": "px",
+      "estimated": true
+    },
+    {
+      "name": "minimum cover width",
+      "group": "grid",
+      "value": 96,
+      "unit": "px",
+      "estimated": true
+    },
+    {
+      "name": "maximum cover width",
+      "group": "grid",
+      "value": 184,
+      "unit": "px",
+      "estimated": true
+    },
+    {
+      "name": "row height",
+      "group": "layout",
+      "value": 30,
+      "unit": "px",
+      "estimated": true
+    },
+    {
+      "name": "status height",
+      "group": "layout",
+      "value": 25,
+      "unit": "px",
+      "estimated": true
+    },
+    {
+      "name": "focus search",
+      "group": "controls",
+      "value": "Ctrl+F",
+      "source": "Explicit user request"
+    },
+    {
+      "name": "toggle explorer",
+      "group": "controls",
+      "value": "Ctrl+E",
+      "source": "Explicit user request"
+    },
+    {
+      "name": "select grid",
+      "group": "controls",
+      "value": "Ctrl+G",
+      "source": "Explicit user request"
+    },
+    {
+      "name": "read only",
+      "group": "safety",
+      "value": true,
+      "source": "Explicit user request"
+    },
+    {
+      "name": "declared means validated",
+      "group": "safety",
+      "value": false,
+      "source": "Explicit user request"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+# Grant the active local desktop user access to virtual controller devices.
+# No group-wide permissions are added; uaccess is managed by systemd-logind.
+KERNEL=="uinput", SUBSYSTEM=="misc", TAG+="uaccess", OPTIONS+="static_node=uinput"
+KERNEL=="uhid", TAG+="uaccess", OPTIONS+="static_node=uhid"

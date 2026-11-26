@@ -1,0 +1,18 @@
+{
+  "task": "backup-engine-profiles-devices-v2",
+  "files": [
+    {
+      "source": "components/controller_studio/commands/CommandService.cs",
+      "sha256": "f73c8ca888b4d85bb347daff2a898140345fe6e9dfdf4e4c1f02f1f1d25a5968"
+    },
+    {
+      "source": "components/controller_studio/commands/ProfileCommandService.cs",
+      "sha256": "52a9d781d5e0002f4621de6c52661dd3b42044f20aac99e665130e4e500ae9eb"
+    },
+    {
+      "source": "components/controller_studio/commands/DeviceCommandService.cs",
+      "sha256": "4263a9b5d2585caf483e1d80e090692c1996182b1d67744f21b843a65c7ffd3c"
+    }
+  ],
+  "parent_source_changes": false
+}

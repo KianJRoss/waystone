@@ -1,0 +1,12 @@
+#!/bin/sh
+# Waystone's MCP tool server (library, mods, installs) for AI assistants, run from the ACTIVE release.
+# Offered to Herald by the Ultimate Assistant node via settings.json "device_mcp_servers".
+set -eu
+rel=$(systemctl --user show waystone.service -p ExecStart --value | grep -oE '/[^ ]+/releases/[^/ ]+' | head -1)
+[ -n "$rel" ] || { echo "waystone-mcp: no active Waystone release" >&2; exit 1; }
+R="${WAYSTONE_DATA_DIR:-$(dirname "$(dirname "$rel")")}"
+export PYTHONPATH="$rel:$rel/craft-projects/playnite-desktop/app"
+export DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-unix:path=/run/user/$(id -u)/bus}"
+exec "$HOME/.local/share/waystone/mcp-venv/bin/python" "$rel/tools/waystone_mcp.py" \
+  --organizer-db "$R/organizer-state-v1.sqlite3" --catalog-link-db "$R/catalog-links-v1.sqlite3" \
+  --library-db "$R/library/native-library-v3.sqlite3" --reconciliation-json "$R/library-reconciliation-v1.json"

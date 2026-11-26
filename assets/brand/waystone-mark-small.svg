@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Waystone">
+  <!-- Simplified mark for 16-32 px: three flat stones, no facets. -->
+  <polygon points="16,94 21,72 48,65 77,69 86,90 60,97" fill="#5a5a57"/>
+  <polygon points="33,67 29,48 50,36 69,44 67,67" fill="#9a9a96"/>
+  <polygon points="41,38 43,21 54,3 65,19 61,38" fill="#ededea"/>
+</svg>

@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "kind": "read-only-library-ui",
+  "steps": [
+    {
+      "step": "initial layout",
+      "passed": true,
+      "detail": "8 stable records in portrait grid"
+    },
+    {
+      "step": "search input",
+      "passed": true,
+      "detail": "Keyboard search returned 3 of 8 query='adventure' expected='adventure' text='adventure'"
+    },
+    {
+      "step": "empty state",
+      "passed": true,
+      "detail": "Zero results clears stale selection"
+    },
+    {
+      "step": "details view",
+      "passed": true,
+      "detail": "Compact game list and selected metadata pane are drawn"
+    },
+    {
+      "step": "keyboard selection",
+      "passed": true,
+      "detail": "Down arrow selects a different stable identity"
+    },
+    {
+      "step": "column list",
+      "passed": true,
+      "detail": "Sortable column list is drawn"
+    },
+    {
+      "step": "column header sorting",
+      "passed": true,
+      "detail": "Clicking the Name header changes the real row order"
+    },
+    {
+      "step": "sort and selection",
+      "passed": true,
+      "detail": "Sort direction updates rows while selection follows the stable ID"
+    },
+    {
+      "step": "resizable explorer",
+      "passed": true,
+      "detail": "Explorer splitter changed width from 195 to 243 px"
+    },
+    {
+      "step": "collapsible explorer",
+      "passed": true,
+      "detail": "Explorer closes and reopens without losing filters"
+    },
+    {
+      "step": "installed filter control",
+      "passed": true,
+      "detail": "Installed control returns 3; declared-installed never counts as validated installed"
+    },
+    {
+      "step": "declaration separation",
+      "passed": true,
+      "detail": "0 declared-install records remain separately selectable"
+    },
+    {
+      "step": "resizable filters",
+      "passed": true,
+      "detail": "Filter splitter changed width from 220 to 255 px"
+    },
+    {
+      "step": "clear filters control",
+      "passed": true,
+      "detail": "Clear resets all filters"
+    },
+    {
+      "step": "organizer",
+      "passed": true,
+      "detail": "Local Organizer health report is available without project-root imports"
+    },
+    {
+      "step": "Ctrl+E",
+      "passed": true,
+      "detail": "Explorer visibility toggles"
+    },
+    {
+      "step": "Ctrl+G",
+      "passed": true,
+      "detail": "Grid shortcut switches view"
+    },
+    {
+      "step": "Ctrl+F",
+      "passed": true,
+      "detail": "Search shortcut focuses the actual search field"
+    },
+    {
+      "step": "read-only invariants",
+      "passed": true,
+      "detail": "All identities, variants and provenance unchanged after interaction"
+    },
+    {
+      "step": "qml diagnostics",
+      "passed": true,
+      "detail": "No Qt Quick warnings"
+    }
+  ]
+}

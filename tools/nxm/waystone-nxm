@@ -1,0 +1,17 @@
+#!/bin/sh
+# Handler for Nexus "Mod manager download" links (nxm://...).
+# Bethesda games (Skyrim, Fallout, ...) go to Mod Organizer 2 when MO2-LINT is installed (it manages load order,
+# FOMOD installers and the VFS); every other game's link goes to Waystone's inbox, which the running app downloads.
+case "$1" in nxm://*) ;; *) echo "usage: waystone-nxm nxm://..." >&2; exit 2 ;; esac
+domain=$(printf '%s' "$1" | sed -E 's#^nxm://([^/]+)/.*#\1#' | tr 'A-Z' 'a-z')
+mo2="${XDG_DATA_HOME:-$HOME/.local/share}/mo2-lint/nxm-handler"
+case "$domain" in
+  skyrimspecialedition|skyrim|enderal|enderalspecialedition|fallout4|falloutnv|newvegas|fallout3|oblivion|morrowind|starfield|fallout4london)
+    if [ -x "$mo2" ]; then exec "$mo2" "$1"; fi ;;
+esac
+inbox="${XDG_DATA_HOME:-$HOME/.local/share}/waystone/mods/nxm-inbox"
+mkdir -p "$inbox"
+stamp=$(date +%s%N)
+printf '%s\n' "$1" > "$inbox/.$stamp.tmp" && mv "$inbox/.$stamp.tmp" "$inbox/$stamp.nxm"
+command -v notify-send >/dev/null && notify-send -a Waystone "Nexus download sent to Waystone" "Opening Mods…" 2>/dev/null
+exit 0

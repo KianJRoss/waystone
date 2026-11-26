@@ -1,0 +1,60 @@
+{
+  "content": [
+    {
+      "text": "{\"authority\":\"original-files\",\"confidence\":\"derived\",\"coverage\":{\"status\":\"unknown\"},\"environment\":{\"clean_room\":false,\"engine\":\"builtin\",\"engine_version\":\"0.6.1\",\"host\":\"linux-x86_64\"},\"id\":\"ev_4694d27aae8b694f2a58d5c4ba29c608512c6a7057a0e3709a2eb9b60688925e\",\"limitations\":[],\"links\":[],\"locations\":[],\"operation\":\"core_archives_compare\",\"params\":{\"left\":\"inv_eb50afc23305ebda39048286e80ebce332086a5ba655ba9f8e71525cb19308f1\",\"right\":\"inv_eb50afc23305ebda39048286e80ebce332086a5ba655ba9f8e71525cb19308f1\"},\"result\":{\"added\":[],\"changed\":[],\"counts\":{\"added\":0,\"changed\":0,\"moved\":0,\"removed\":0,\"unchanged\":67},\"identical\":true,\"left\":{\"content_id\":\"inv_eb50afc23305ebda39048286e80ebce332086a5ba655ba9f8e71525cb19308f1\",\"files\":67,\"root\":\"UnifiedController.Linux.App\"},\"moved\":[],\"removed\":[],\"right\":{\"content_id\":\"inv_eb50afc23305ebda39048286e80ebce332086a5ba655ba9f8e71525cb19308f1\",\"files\":67,\"root\":\"UnifiedController.Linux.App\"}},\"subject\":{\"kind\":\"artifact-pair\",\"name\":\"UnifiedController.Linux.App vs UnifiedController.Linux.App\"},\"summary\":\"UnifiedController.Linux.App → UnifiedController.Linux.App: 0 added, 0 removed, 0 changed, 0 moved, 67 unchanged.\"}",
+      "type": "text"
+    }
+  ],
+  "isError": false,
+  "structuredContent": {
+    "authority": "original-files",
+    "confidence": "derived",
+    "coverage": {
+      "status": "unknown"
+    },
+    "environment": {
+      "clean_room": false,
+      "engine": "builtin",
+      "engine_version": "0.6.1",
+      "host": "linux-x86_64"
+    },
+    "id": "ev_4694d27aae8b694f2a58d5c4ba29c608512c6a7057a0e3709a2eb9b60688925e",
+    "limitations": [],
+    "links": [],
+    "locations": [],
+    "operation": "core_archives_compare",
+    "params": {
+      "left": "inv_eb50afc23305ebda39048286e80ebce332086a5ba655ba9f8e71525cb19308f1",
+      "right": "inv_eb50afc23305ebda39048286e80ebce332086a5ba655ba9f8e71525cb19308f1"
+    },
+    "result": {
+      "added": [],
+      "changed": [],
+      "counts": {
+        "added": 0,
+        "changed": 0,
+        "moved": 0,
+        "removed": 0,
+        "unchanged": 67
+      },
+      "identical": true,
+      "left": {
+        "content_id": "inv_eb50afc23305ebda39048286e80ebce332086a5ba655ba9f8e71525cb19308f1",
+        "files": 67,
+        "root": "UnifiedController.Linux.App"
+      },
+      "moved": [],
+      "removed": [],
+      "right": {
+        "content_id": "inv_eb50afc23305ebda39048286e80ebce332086a5ba655ba9f8e71525cb19308f1",
+        "files": 67,
+        "root": "UnifiedController.Linux.App"
+      }
+    },
+    "subject": {
+      "kind": "artifact-pair",
+      "name": "UnifiedController.Linux.App vs UnifiedController.Linux.App"
+    },
+    "summary": "UnifiedController.Linux.App → UnifiedController.Linux.App: 0 added, 0 removed, 0 changed, 0 moved, 67 unchanged."
+  }
+}

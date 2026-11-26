@@ -1,0 +1,7 @@
+{
+  "source": "components/controller_studio/commands/CommandService.cs",
+  "source_sha256": "9867331add7043b46d975c73fde4df0567d736d7e4bfacd32a6285f7c85f35fc",
+  "derived_sha256": "70eedfffd330ab351bdb27f5930dc292250f676be6a8e6978b696143be36dcd3",
+  "parent_review_patch": "Capability target selection mirrors existing Core SendRumble all_connected branch; original worker source untouched.",
+  "queued_review": "fa0e5b6b-68c5-4bce-bbd7-7b9b61bdf047"
+}
