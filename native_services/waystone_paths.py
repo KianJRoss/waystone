@@ -1,6 +1,7 @@
-"""Where Waystone keeps its data (W22, public release): one place, XDG-aware, no machine-specific paths.
+"""Where Waystone keeps user data (XDG on Linux, AppData on Windows).
 
-New installs use `$XDG_DATA_HOME/waystone` (default `~/.local/share/waystone`). Installs that predate the public
+Linux installs use `$XDG_DATA_HOME/waystone` (default `~/.local/share/waystone`). Windows uses
+`%LOCALAPPDATA%/Waystone` for data/state and `%APPDATA%/Waystone` for config. Installs that predate the public
 release keep using their pre-release data folder when it exists, so nothing has to be moved and nothing can be lost.
 Qt-free; resolved at call time so tests can patch HOME.
 """
@@ -8,6 +9,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+from .platform import app_roots
 
 try:
     from private_addons import LEGACY_DIR_NAME
@@ -16,40 +18,31 @@ except ImportError:
 
 
 def data_home(home: Path | None = None) -> Path:
-    if home is not None:
-        return Path(home) / ".local" / "share"
-    value = os.environ.get("XDG_DATA_HOME", "")
-    return Path(value) if value and os.path.isabs(value) else Path.home() / ".local" / "share"
+    # Keep the legacy helper's parent-root semantics; native app data is selected
+    # from LOCALAPPDATA on Windows and XDG_DATA_HOME on Linux.
+    return app_roots(home=home, environ={} if home is not None else None)["data"].parent
 
 
 def config_home() -> Path:
-    value = os.environ.get("XDG_CONFIG_HOME", "")
-    return Path(value) if value and os.path.isabs(value) else Path.home() / ".config"
+    return app_roots()["config"].parent
 
 
 def state_home() -> Path:
-    value = os.environ.get("XDG_STATE_HOME", "")
-    return Path(value) if value and os.path.isabs(value) else Path.home() / ".local" / "state"
+    return app_roots()["state"].parent
 
 
-def xdg_paths(home: Path | None = None, environ=None) -> dict[str, Path]:
+def xdg_paths(home: Path | None = None, environ=None, *, system: str | None = None) -> dict[str, Path]:
     """Resolve the two XDG roots used by local-library discovery.
 
     Explicit fixture homes and injected env mappings keep tests away from the
     real user's directories. Invalid relative XDG overrides are ignored.
     """
-    env = os.environ if environ is None else environ
-    fallback_home = Path(home).expanduser() if home is not None else Path.home()
-    def root(variable, fallback):
-        value = env.get(variable, "")
-        candidate = Path(value).expanduser() if value and os.path.isabs(value) else fallback_home / fallback
-        return candidate.absolute()
-    return {"data": root("XDG_DATA_HOME", ".local/share") / "waystone",
-            "config": root("XDG_CONFIG_HOME", ".config") / "waystone"}
+    roots = app_roots(home=home, environ=environ, system=system)
+    return {"data": roots["data"], "config": roots["config"]}
 
 
 def data_dir(home: Path | None = None) -> Path:
-    return data_home(home) / "waystone"
+    return app_roots(home=home, environ={} if home is not None else None)["data"]
 
 
 def legacy_dir(home: Path | None = None) -> Path:

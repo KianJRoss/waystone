@@ -27,6 +27,26 @@ jobs:
       - name: Controller QML tests
         run: bash craft-projects/playnite-desktop/app/controller_native/run_tests.sh
 
+  windows-platform:
+    name: Windows platform boundary (Python + Qt import)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v6
+      - name: Platform-independent Windows tests
+        env:
+          PYTHONPATH: ".;craft-projects/playnite-desktop;craft-projects/playnite-desktop/app"
+          QT_QPA_PLATFORM: offscreen
+        run: uv run --with-requirements requirements-test.txt python -m pytest -q -p no:cacheprovider tests/test_platform.py
+      - name: Import application modules on Windows
+        env:
+          PYTHONPATH: ".;craft-projects/playnite-desktop;craft-projects/playnite-desktop/app"
+          QT_QPA_PLATFORM: offscreen
+        run: uv run --with-requirements requirements-test.txt python -c "import app; from native_services import game_process_tracker, game_launcher, waystone_paths, waystone_control, file_locking, install_receipts, artwork_overrides, xodus_install; print('Waystone Windows import smoke passed')"
+
   engine:
     name: Controller engine (.NET 10)
     runs-on: ubuntu-24.04

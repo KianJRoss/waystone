@@ -4,6 +4,7 @@ import platform
 import subprocess
 from pathlib import Path
 from .launcher_connections import build_launch_intent
+from .platform import is_windows, process_launch_options
 
 
 class LaunchError(ValueError):
@@ -32,12 +33,12 @@ def launch_game(connection, *, current_host=None, spawn=None):
     if not isinstance(payload, str) or not Path(payload).is_absolute() or not Path(payload).is_dir():
         raise LaunchError('Game installation directory is missing; refresh this device')
     executable = Path(intent.argv[0])
-    if not executable.is_file() or not os.access(executable, os.X_OK):
+    if not executable.is_file() or (not is_windows() and not os.access(executable, os.X_OK)):
         raise LaunchError('The configured native launcher is unavailable')
     try:
         process = (spawn or subprocess.Popen)(list(intent.argv), shell=False,
             stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL, start_new_session=True, close_fds=True)
+            stderr=subprocess.DEVNULL, **process_launch_options())
     except OSError as exc:
         raise LaunchError('The native launcher could not be started') from exc
     return {'status': 'handed_off', 'pid': process.pid,

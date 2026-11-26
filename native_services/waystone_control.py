@@ -7,7 +7,6 @@ thread so app state and launch actions stay serialized with the visible UI.
 from __future__ import annotations
 
 import json
-import fcntl
 import os
 from pathlib import Path
 import shutil
@@ -26,6 +25,7 @@ from native_services.waystone_control_client import (  # noqa: F401 - re-exporte
     MAX_QUERY_CHARS, MAX_REQUEST_BYTES, MAX_RESPONSE_BYTES, MAX_SEARCH_LIMIT, WaystoneSocketClient,
     _ALLOWED_FIELDS, _REQUEST_ID, runtime_socket_path,
 )
+from native_services import file_locking as fcntl
 
 
 def _js_value(value: Any) -> Any:

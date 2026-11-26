@@ -7,7 +7,6 @@ concurrent workers cannot clobber each other.
 from __future__ import annotations
 
 import copy
-import fcntl
 import json
 import os
 from pathlib import Path
@@ -15,6 +14,7 @@ import re
 import socket
 import tempfile
 import time
+from native_services import file_locking as fcntl
 
 try:
     from private_addons import (

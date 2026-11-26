@@ -10,6 +10,7 @@ SERVICE_ROOT = HERE.parents[2]
 sys.path[:] = [str(SERVICE_ROOT)] + [p for p in sys.path if p != str(SERVICE_ROOT)]
 from native_services import waystone_paths as _wpaths  # noqa: E402 (needs SERVICE_ROOT on sys.path)
 from native_services import provider_engines as _provider_engines  # noqa: E402
+from native_services.platform import is_windows as _is_windows  # noqa: E402
 
 try:
     from private_addons import (
@@ -423,7 +424,7 @@ def create_session(application, snapshots=None, organizer=False, view='grid', he
     engine.controller_navigation = controller_navigation
     from controller_studio_host import ControllerStudioHost
     studio_root = SERVICE_ROOT / 'components' / 'controller_studio' / 'runtime' / 'publish'
-    app_data = Path(os.environ.get('XDG_DATA_HOME', str(Path.home() / '.local/share')))
+    app_data = _wpaths.data_home()
     if native_controller_ui:
         from controller_engine_host import ControllerEngineHost
         studio = studio_host or ControllerEngineHost(
@@ -817,22 +818,28 @@ def main():
         # MCP live control is a thin local bridge into the running app. Requests are
         # dispatched by QLocalServer on this GUI thread and call Main.qml's exact
         # playGameById path; headless/smoke sessions never publish a control socket.
-        try:
-            from native_services.waystone_control import AppJournal, WaystoneControlServer
-            state_root = Path(os.environ.get('XDG_STATE_HOME', str(Path.home() / '.local/state')))
-            control_server = WaystoneControlServer(
-                launch_view=engine.launch_view,
-                library_model=model,
-                qml_root=root,
-                journal=AppJournal(state_root / 'waystone' / 'app-journal.jsonl'),
-                parent=app,
-            )
-            control_server.start()
-            engine.waystone_control_server = control_server
-            app.aboutToQuit.connect(control_server.close)
-        except (OSError, RuntimeError) as exc:
-            # The library remains usable; MCP will return an explicit unavailable error.
-            print(f'Waystone live control unavailable: {exc}', file=sys.stderr)
+        if _is_windows():
+            # The Linux AF_UNIX/peer-credential server is not a safe Windows transport;
+            # a same-user Named Pipe is a separately planned controller/control slice.
+            print('Waystone live control unavailable: Windows named-pipe transport is not implemented',
+                  file=sys.stderr)
+        else:
+            try:
+                from native_services.waystone_control import AppJournal, WaystoneControlServer
+                state_root = _wpaths.state_home()
+                control_server = WaystoneControlServer(
+                    launch_view=engine.launch_view,
+                    library_model=model,
+                    qml_root=root,
+                    journal=AppJournal(state_root / 'waystone' / 'app-journal.jsonl'),
+                    parent=app,
+                )
+                control_server.start()
+                engine.waystone_control_server = control_server
+                app.aboutToQuit.connect(control_server.close)
+            except (OSError, RuntimeError) as exc:
+                # The library remains usable; MCP will return an explicit unavailable error.
+                print(f'Waystone live control unavailable: {exc}', file=sys.stderr)
     root.resize(max(900, args.width), max(560, args.height))
     if args.installed:
         root.setProperty('status', 'installed')

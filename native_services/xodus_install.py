@@ -7,7 +7,6 @@ copying, sign-in command, license export or game execution is involved.
 from __future__ import annotations
 import asyncio
 from dataclasses import dataclass
-import fcntl
 import json
 import os
 from pathlib import Path, PureWindowsPath
@@ -15,6 +14,7 @@ import re
 import signal
 import time
 import xml.etree.ElementTree as ET
+from native_services import file_locking as fcntl
 
 from .provider_jobs import ProviderJobProgress
 from .installation_library import inspect_destination

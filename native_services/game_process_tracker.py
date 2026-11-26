@@ -1,9 +1,11 @@
 """Application lifetime tracking for Steam games, emulators, and native executables.
 
 Tracks actual game processes rather than transient launcher PIDs.
-Steam and runner processes are identified by targeted /proc/<pid>/environ inspection
-(SteamAppId, SteamGameId, STEAM_COMPAT_APP_ID, LUTRIS_GAME_UUID, KIAN_GAME_SESSION_ID).
-Only these specific variables are read; raw environment is never persisted or exposed.
+On Linux, Steam and runner processes may be identified by targeted /proc/<pid>/environ
+inspection (SteamAppId, SteamGameId, STEAM_COMPAT_APP_ID, LUTRIS_GAME_UUID,
+KIAN_GAME_SESSION_ID). Only these specific variables are read; raw environment is never
+persisted or exposed. On Windows, Toolhelp snapshots expose process lineage and executable
+identity only; arbitrary process environments are deliberately not queried.
 Steam client, helper, and container wrapper processes (even when holding the App ID in URI/arguments)
 are strictly excluded.
 Adopts Lutris-informed process filtering concepts (UUID environment tagging, game folder scoping,
@@ -22,6 +24,7 @@ import re
 import time
 from typing import Callable, Iterable
 import uuid
+from .platform import WindowsProcessReader, is_windows
 
 # Steam client and container wrapper processes to strictly exclude
 STEAM_WRAPPER_NAMES = frozenset({
@@ -104,7 +107,7 @@ class TrackedGameSession:
 
 
 class ProcReader:
-    """Reads process state from /proc with bounded error handling.
+    """Reads process state from /proc with bounded error handling (Linux adapter).
 
     Injectable proc_dir allows 100% offline unit tests without host inspection.
     """
@@ -246,7 +249,7 @@ class GameProcessTracker:
         clock: Callable[[], float] | None = None,
         default_startup_timeout: float = 30.0,
     ):
-        self.proc = proc_reader or ProcReader()
+        self.proc = proc_reader or (WindowsProcessReader() if is_windows() else ProcReader())
         self.clock = clock or time.time
         self.default_startup_timeout = default_startup_timeout
         self.sessions: dict[str, TrackedGameSession] = {}

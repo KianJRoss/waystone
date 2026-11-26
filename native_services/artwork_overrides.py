@@ -18,7 +18,6 @@ from __future__ import annotations
 from contextlib import contextmanager
 from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
-import fcntl
 import hashlib
 import json
 import os
@@ -26,6 +25,7 @@ from pathlib import Path
 import re
 import stat
 import uuid
+from native_services import file_locking as fcntl
 
 MAX_MEDIA_BYTES = 16 * 1024**2
 MAX_PIXELS = 16_000_000
@@ -38,7 +38,10 @@ MAX_AUDIT = 1000
 MAX_IDS = 100_000
 MEDIA_ROLES = ('cover', 'background', 'icon', 'hero', 'logo')
 KIND = 'native-manual-artwork-v1'
-_FLAGS = os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC | os.O_NONBLOCK
+# Keep module importable on Windows even though the current secure store implementation
+# still relies on POSIX dir_fd/openat operations and is not yet enabled there.
+_FLAGS = (os.O_RDONLY | getattr(os, 'O_NOFOLLOW', 0) | getattr(os, 'O_CLOEXEC', 0)
+          | getattr(os, 'O_NONBLOCK', 0))
 _ASSET = re.compile(r'[0-9a-f]{64}\.(png|jpeg|webp|bmp|ico)\Z')
 
 
