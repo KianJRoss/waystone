@@ -57,7 +57,12 @@ PKGDIR="$WORK_DIR/pkg"
 mkdir -p "$SRCDIR" "$PKGDIR"
 
 echo "==> Exporting curated public tree..."
-bash "$ROOT/tools/export_public.sh" "$SRCDIR/waystone-${VERSION}"
+if [ -f "$ROOT/tools/export_public.sh" ]; then
+  bash "$ROOT/tools/export_public.sh" "$SRCDIR/waystone-${VERSION}"   # private repo: build from the curated public tree
+else
+  # already the public repo (e.g. GitHub Actions): use the checkout as-is, without git metadata
+  mkdir -p "$SRCDIR/waystone-${VERSION}" && rsync -a --exclude .git --exclude dist "$ROOT/" "$SRCDIR/waystone-${VERSION}"/
+fi
 
 echo "==> Staging package tree using packaging/arch/PKGBUILD build() and package()..."
 (

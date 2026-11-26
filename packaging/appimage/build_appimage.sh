@@ -61,7 +61,12 @@ PUBLIC_SRC="$WORK_DIR/public-src"
 APPDIR="$WORK_DIR/Waystone.AppDir"
 
 echo "==> Exporting curated public tree..."
-bash "$ROOT/tools/export_public.sh" "$PUBLIC_SRC"
+if [ -f "$ROOT/tools/export_public.sh" ]; then
+  bash "$ROOT/tools/export_public.sh" "$PUBLIC_SRC"   # private repo: build from the curated public tree
+else
+  # already the public repo (e.g. GitHub Actions): use the checkout as-is, without git metadata
+  mkdir -p "$PUBLIC_SRC" && rsync -a --exclude .git --exclude dist "$ROOT/" "$PUBLIC_SRC"/
+fi
 
 echo "==> Preparing AppDir layout..."
 mkdir -p \
