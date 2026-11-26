@@ -599,3 +599,16 @@ class SunshineStreamingTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+def test_sunshine_command_uses_an_absolute_waystone_path(tmp_path):
+    """Sunshine runs apps with its own environment; entries must not depend on the user's PATH."""
+    from native_services import sunshine_library as sl
+    local = tmp_path / ".local/bin/waystone"
+    local.parent.mkdir(parents=True)
+    local.write_text("#!/bin/sh\n")
+    local.chmod(0o755)
+    assert sl.resolve_waystone_command(which=lambda name: None, home=tmp_path) == str(local)
+    assert sl.resolve_waystone_command(which=lambda name: None, home=tmp_path / "nobody") == "waystone"
+    assert sl.build_waystone_command("steam:1", waystone_command=str(local)) == f"{local} --play steam:1"
+    assert sl.build_waystone_command("x y", waystone_command="/opt/my apps/waystone") == "'/opt/my apps/waystone' --play 'x y'"

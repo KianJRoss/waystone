@@ -476,10 +476,22 @@ def select_games_for_sunshine(
     return selected
 
 
+def resolve_waystone_command(which=shutil.which, home: Path | None = None) -> str:
+    """Absolute path of the `waystone` command when it can be found: Sunshine runs apps with its own environment,
+    which may not include the user's PATH (e.g. ~/.local/bin)."""
+    found = which("waystone")
+    if found:
+        return str(Path(found).resolve()) if not Path(found).is_symlink() else str(found)
+    local = (home or Path.home()) / ".local" / "bin" / "waystone"
+    if local.is_file() and os.access(local, os.X_OK):
+        return str(local)
+    return "waystone"
+
+
 def build_waystone_command(canonical_id: str, *, waystone_command: str = "waystone") -> str:
     """Format the per-game Sunshine launch command ``waystone --play <canonical-id>``."""
     base = (waystone_command or "waystone").strip() or "waystone"
-    return f"{base} --play {shlex.quote(canonical_id)}"
+    return f"{shlex.quote(base)} --play {shlex.quote(canonical_id)}"
 
 
 class SunshineRestClient:

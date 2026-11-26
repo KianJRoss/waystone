@@ -16,6 +16,7 @@ from native_services.sunshine_library import (
     detect_sunshine_host,
     publish_to_sunshine,
     remove_from_sunshine,
+    resolve_waystone_command,
     select_games_for_sunshine,
 )
 
@@ -34,7 +35,7 @@ class SunshineSettingsView(QObject):
         media_catalog: Any = None,
         ribbon_cache: Any = None,
         artwork_cache_dir: Path | None = None,
-        waystone_command: str = "waystone",
+        waystone_command: str | None = None,
         rest_client: Any = None,
         which: Callable[[str], str | None] = shutil.which,
         status_probe: Callable[[], dict[str, Any]] | None = None,
@@ -56,7 +57,7 @@ class SunshineSettingsView(QObject):
         self._media_catalog = media_catalog
         self._ribbon_cache = ribbon_cache
         self._artwork_cache_dir = Path(artwork_cache_dir) if artwork_cache_dir is not None else None
-        self._waystone_command = waystone_command
+        self._waystone_command = waystone_command  # None: resolved to an absolute path when publishing
         self._rest_client = rest_client
         self._which = which
         self._status_probe = status_probe
@@ -310,7 +311,7 @@ class SunshineSettingsView(QObject):
             result = publish_to_sunshine(
                 self._status.config_dir,
                 games,
-                waystone_command=self._waystone_command,
+                waystone_command=self._waystone_command or resolve_waystone_command(),
                 rest_client=self._rest_client,
             )
             self._status = self._detect()
