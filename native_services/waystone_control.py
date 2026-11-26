@@ -341,9 +341,11 @@ class WaystoneControlServer(QObject):
             game_id = request.get("game_id")
             if not isinstance(game_id, str) or not 1 <= len(game_id) <= 256:
                 raise ValueError("invalid_game_id")
+            rep_fn = getattr(self._model, "representativeFor", None)
+            resolved_id = (rep_fn(game_id) if callable(rep_fn) else "") or game_id
             # Treat IDs as selectors into the live catalog, never as caller-provided
             # launch targets. QML performs the authoritative installed-option check.
-            if not any(isinstance(game, dict) and game.get("id") == game_id
+            if not any(isinstance(game, dict) and game.get("id") == resolved_id
                        for game in self._model.games):
                 return {"status": "rejected", "detail": "Game is not in the Waystone library."}
             status = self._status_result()
@@ -353,7 +355,7 @@ class WaystoneControlServer(QObject):
             # QML library path used by the visible Play button and overlay.
             request_assistant_play = getattr(self._root, "requestAssistantPlayById", None)
             if callable(request_assistant_play):
-                assistant_result = _js_value(request_assistant_play(game_id))
+                assistant_result = _js_value(request_assistant_play(resolved_id))
                 if isinstance(assistant_result, dict):
                     if assistant_result.get("status") != "started":
                         return assistant_result
@@ -362,7 +364,7 @@ class WaystoneControlServer(QObject):
                         self._watch_input(True)
                     return {"status": "started", "animating": bool(assistant_result.get("animating")),
                             **self._status_result()}
-            handed_off = bool(_js_value(self._root.playGameById(game_id)))
+            handed_off = bool(_js_value(self._root.playGameById(resolved_id)))
             if not handed_off:
                 return {"status": "rejected", "detail": self._safe_detail(self._launch.lastError)}
             return {"status": "started", **self._status_result()}

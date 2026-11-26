@@ -30,7 +30,7 @@ except ImportError:
     _SECONDARY_LIBRARY_NAME = ''
 
 
-def create_session(application, snapshots=None, organizer=False, view='grid', headless=False, catalog=None, media_root=None, store_catalog=None, emulation_db=None, organizer_state=None, launcher_sync=False, connections=None, link_state=None, native_collector_root=None, native_refresh_root=None, library_db=None, plugin_metadata_db=None, reconciliation=None, launch_profile_root=None, artwork_override_root=None, rom_config=None, spawn_fn=None, save_config=None, save_runner=None, xodus_helper=None, social_transport=None, voice_available=False, provider_manager=None, provider_jobs_enabled=True, controller_client=None, studio_host=None, native_controller_ui=False, game_progress_repository=None, organizer_workspace=None, plugin_time_schema=None, organizer_agent_gateway=None, platform_social_view=None, session_store=None, mod_config=None, mod_service=None, receipt_registry=None, epic_account_service=None, nile_account_service=None, gog_account_service=None, controller_profiles_path=None, local_games=None, update_detector=None, first_run_screenshot=False, **addon_kwargs):
+def create_session(application, snapshots=None, organizer=False, view='grid', headless=False, catalog=None, media_root=None, store_catalog=None, emulation_db=None, organizer_state=None, launcher_sync=False, connections=None, link_state=None, native_collector_root=None, native_refresh_root=None, library_db=None, plugin_metadata_db=None, reconciliation=None, launch_profile_root=None, artwork_override_root=None, rom_config=None, spawn_fn=None, save_config=None, save_runner=None, xodus_helper=None, social_transport=None, voice_available=False, provider_manager=None, provider_jobs_enabled=True, controller_client=None, studio_host=None, native_controller_ui=False, game_progress_repository=None, organizer_workspace=None, plugin_time_schema=None, organizer_agent_gateway=None, platform_social_view=None, session_store=None, mod_config=None, mod_service=None, receipt_registry=None, epic_account_service=None, nile_account_service=None, gog_account_service=None, controller_profiles_path=None, local_games=None, update_detector=None, first_run_screenshot=False, sunshine_config_dir=None, sunshine_status_probe=None, sunshine_rest_client=None, sunshine_which=None, **addon_kwargs):
     from PySide6.QtCore import QUrl
     from PySide6.QtQml import QQmlApplicationEngine
     from PySide6.QtQuick import QQuickWindow  # Register the window wrapper before engine.load
@@ -371,6 +371,11 @@ def create_session(application, snapshots=None, organizer=False, view='grid', he
             model.organizerOverlayChanged.emit()
         except Exception:
             pass
+        if getattr(engine, 'sunshine_settings', None) is not None:
+            try:
+                engine.sunshine_settings.republishIfEnabled()
+            except Exception:
+                pass
         return True
     if receipt_registry is not None:
         if download_jobs is not None:
@@ -537,6 +542,30 @@ def create_session(application, snapshots=None, organizer=False, view='grid', he
         last_launch_error['text'] = text
     launch_view.changed.connect(_launch_error_sound)
     engine.ui_sounds = ui_sounds
+    from sunshine_settings_view import SunshineSettingsView
+    sunshine_settings = SunshineSettingsView(
+        settings_path=headless_settings if headless else getattr(ui_sounds, '_path', None),
+        config_dir=sunshine_config_dir,
+        library_model=model,
+        local_library=local_library,
+        artwork_view=artwork_view,
+        media_catalog=media,
+        ribbon_cache=getattr(model, '_ribbon_cache', None),
+        rest_client=sunshine_rest_client,
+        which=sunshine_which or ((lambda _name: None) if headless and sunshine_config_dir is None else os.environ.get and __import__('shutil').which),
+        status_probe=sunshine_status_probe,
+        home_dir=headless_settings.parent if (headless and sunshine_config_dir is None) else None,
+        xdg_config_home=(headless_settings.parent / 'config') if (headless and sunshine_config_dir is None) else None,
+        offline=bool(headless or not _live_session()),
+        parent=engine,
+    )
+    engine.sunshine_settings = sunshine_settings
+    if launcher_library is not None:
+        launcher_library.refreshed.connect(
+            lambda: sunshine_settings.republishIfEnabled() if launcher_library.lastRefreshSucceeded else None
+        )
+    if refresh_view is not None:
+        refresh_view.refreshed.connect(lambda _path: sunshine_settings.republishIfEnabled())
     from big_screen_view import BigScreenView
     big_screen_view = BigScreenView(
         settings_path=headless_settings if headless else getattr(ui_sounds, '_path', None),
@@ -554,6 +583,7 @@ def create_session(application, snapshots=None, organizer=False, view='grid', he
         mod_management=mod_management,
         ui_sounds=ui_sounds,
         assistant_preferences=assistant_preferences,
+        sunshine_settings=sunshine_settings,
         parent=engine,
     )
     engine.big_screen_view = big_screen_view
@@ -577,6 +607,7 @@ def create_session(application, snapshots=None, organizer=False, view='grid', he
                                                parent=engine))   # tests never go online or touch Steam
     engine.proton_view = proton_view
     properties = {
+        'sunshineSettings': sunshine_settings,
         'protonView': proton_view,
         'bigScreenView': big_screen_view,
         'uiSounds': ui_sounds,
@@ -703,12 +734,66 @@ def create_session(application, snapshots=None, organizer=False, view='grid', he
     return engine, model, engine.rootObjects()[0], warnings
 
 
+def try_handoff_play_to_running_app(game_id: str, *, client_factory=None) -> int | None:
+    """Hand off ``--play <canonical-id>`` to a running Waystone instance over the live-control socket.
+
+    Returns ``0`` on successful handoff, ``1`` if the running app rejected the request,
+    or ``None`` if Waystone is not currently running (caller should start Waystone and launch it).
+    """
+    target_id = str(game_id or '').strip()
+    if not target_id:
+        print('Waystone --play requires a non-empty canonical game ID', file=sys.stderr)
+        return 1
+    try:
+        if client_factory is None:
+            from native_services.waystone_control_client import WaystoneSocketClient
+            client = WaystoneSocketClient()
+        else:
+            client = client_factory()
+        result = client.request('play', game_id=target_id)
+    except ConnectionError:
+        return None
+    except ValueError as exc:
+        print(f'Waystone rejected play request: {exc}', file=sys.stderr)
+        return 1
+    if isinstance(result, dict) and result.get('status') in ('started', 'handed_off'):
+        return 0
+    detail = result.get('detail') if isinstance(result, dict) else None
+    print(str(detail or 'Waystone could not start the requested game.'), file=sys.stderr)
+    return 1
+
+
+def schedule_startup_play(root, model, launcher_library, game_id: str) -> None:
+    """Launch ``game_id`` after starting a new Waystone session, waiting for initial sync if needed."""
+    from PySide6.QtCore import QTimer
+    target_id = str(game_id or '').strip()
+    if not target_id:
+        return
+    state = {'launched': False}
+
+    def _attempt():
+        if state['launched']:
+            return
+        rep = model.representativeFor(target_id) or target_id
+        raw = root.playGameById(rep)
+        to_var = getattr(raw, 'toVariant', None)
+        ok = bool(to_var() if callable(to_var) else raw)
+        if ok:
+            state['launched'] = True
+
+    if launcher_library is not None:
+        launcher_library.refreshed.connect(_attempt)
+    QTimer.singleShot(120, _attempt)
+
+
 def main():
     parser = argparse.ArgumentParser(description='Waystone desktop gaming library')
     inputs = parser.add_mutually_exclusive_group()
     inputs.add_argument('--snapshot', type=Path, action='append')
     inputs.add_argument('--catalog', type=Path)
     inputs.add_argument('--library-db', type=Path, help='Independent read-only native SQLite library')
+    parser.add_argument('--play', metavar='CANONICAL_ID', default=None,
+                        help='Launch a game by canonical ID via the running Waystone instance, or start Waystone and launch it')
     parser.add_argument('--launcher-library', action='store_true', help='Open an app-owned launcher library and enable local sync')
     parser.add_argument('--launch-profile-root', type=Path, help='Shared app-owned game and emulator launch profiles')
     parser.add_argument('--artwork-override-root', type=Path, help='App-owned manual artwork overrides')
@@ -756,6 +841,10 @@ def main():
     if args.show_details is None:
         args.show_details = args.view != 'list'
     headless = bool(args.smoke_test or args.self_test or args.screenshot)
+    if args.play is not None and not headless:
+        handoff_code = try_handoff_play_to_running_app(args.play)
+        if handoff_code is not None:
+            return handoff_code
     launcher_sync = bool(args.launcher_library)
     if not headless and args.snapshot is None and args.catalog is None and args.library_db is None:
         from native_services.launcher_library import default_library_path
@@ -859,6 +948,8 @@ def main():
             QTimer.singleShot(100, engine.first_run_guide.reopen)
     elif args.big_screen or (not headless and engine.big_screen_view.startInBigScreen):
         root.toggleConsole()
+    if args.play is not None:
+        schedule_startup_play(root, model, engine.launcher_library, args.play)
     result = {'code': 0}
 
     def finish():

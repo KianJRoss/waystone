@@ -117,6 +117,7 @@ class BigScreenView(QObject):
         mod_management: Any = None,
         ui_sounds: Any = None,
         assistant_preferences: Any = None,
+        sunshine_settings: Any = None,
         parent: QObject | None = None,
     ) -> None:
         super().__init__(parent)
@@ -134,6 +135,7 @@ class BigScreenView(QObject):
         self._game_progress = game_progress
         self._mod_management = mod_management
         self._ui_sounds = ui_sounds
+        self._sunshine_settings = sunshine_settings
 
         self._start_in_big_screen = False
         # The assistant animation settings have ONE home (AssistantAnimationSettings, also behind desktop
@@ -141,6 +143,9 @@ class BigScreenView(QObject):
         self._assistant = assistant_preferences
         if self._assistant is not None and hasattr(self._assistant, "changed"):
             self._assistant.changed.connect(self.settingsChanged)
+        if self._sunshine_settings is not None and hasattr(self._sunshine_settings, "changed"):
+            self._sunshine_settings.changed.connect(self.gameMetaChanged)
+            self._sunshine_settings.changed.connect(self.settingsChanged)
 
         # Local fallback controller overrides when studio daemon is not running
         self._gyro_override: str = ""
@@ -1035,3 +1040,12 @@ class BigScreenView(QObject):
         except Exception:
             pass
         return "None"
+
+    @Slot(result=str)
+    def streamingStatusLabel(self) -> str:
+        if self._sunshine_settings is not None:
+            try:
+                return str(getattr(self._sunshine_settings, "bigScreenStatus", "") or "Off")
+            except Exception:
+                return "Off"
+        return "Off"

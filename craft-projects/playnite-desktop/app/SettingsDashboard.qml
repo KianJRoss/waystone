@@ -18,14 +18,21 @@ WorkspacePage {
         if (typeof steamLibrarySettings !== "undefined" && steamLibrarySettings) steamLibrarySettings.checkSaved()
         if (typeof ribbonArtworkSettings !== "undefined" && ribbonArtworkSettings) ribbonArtworkSettings.checkKeyring()
     }
-    onVisibleChanged: if (visible && selectedCategory === 0) checkAccountKeyrings()
-    onSelectedCategoryChanged: if (visible && selectedCategory === 0) checkAccountKeyrings()
+    onVisibleChanged: {
+        if (visible && selectedCategory === 0) checkAccountKeyrings()
+        if (visible && selectedCategory === 5 && typeof sunshineSettings !== "undefined" && sunshineSettings) sunshineSettings.refreshStatus()
+    }
+    onSelectedCategoryChanged: {
+        if (visible && selectedCategory === 0) checkAccountKeyrings()
+        if (visible && selectedCategory === 5 && typeof sunshineSettings !== "undefined" && sunshineSettings) sunshineSettings.refreshStatus()
+    }
     readonly property var categories: [
         { name: "Accounts", desc: "Store and platform sign-ins" },
         { name: "Storage", desc: "Install folder and installed-games refresh" },
         { name: "Store", desc: "Price comparison filters" },
         { name: "Games", desc: "Which monitor games open on" },
         { name: "General", desc: "Sounds and how Waystone feels" },
+        { name: "Streaming", desc: "Your library in Moonlight via Sunshine" },
         { name: "Advanced", desc: "Catalog and connection inspectors, diagnostics" }
     ]
 
@@ -417,6 +424,113 @@ WorkspacePage {
                             Text {
                                 visible: assistantAnimationCard.available && assistantPreferences.lastError.length > 0
                                 text: assistantAnimationCard.available && assistantPreferences.lastError.length > 0 ? "Settings could not be saved; the previous value is still active." : ""
+                                color: Theme.muted; font.family: Theme.family; font.pixelSize: 12; wrapMode: Text.WordWrap
+                            }
+                        }
+                    }
+
+                    // Streaming
+                    ColumnLayout {
+                        spacing: 14
+                        Card {
+                            id: streamingCard
+                            objectName: "settingsStreamingCard"
+                            heading: "Sunshine & Moonlight"
+                            note: "Publish your Waystone games into Sunshine (or the Apollo fork) so they appear in Moonlight with their 600×900 cover art and start through Waystone (keeping controller profiles, virtual pad, Proton version and Playing tracking). Waystone writes tagged entries into apps.json (backing it up first) and never touches your other Sunshine apps."
+                            readonly property bool available: typeof sunshineSettings !== "undefined" && sunshineSettings
+                            readonly property var filterOptions: [
+                                { label: "Installed games only", mode: "installed" },
+                                { label: "Favourites", mode: "favorites" },
+                                { label: "Category", mode: "category" }
+                            ]
+                            RowLayout {
+                                Layout.fillWidth: true; spacing: 8
+                                Text {
+                                    objectName: "settingsStreamingStatus"
+                                    Layout.fillWidth: true
+                                    text: streamingCard.available ? sunshineSettings.statusSummary : "Streaming integration unavailable"
+                                    color: Theme.text; font.family: Theme.family; font.pixelSize: 13; wrapMode: Text.WordWrap
+                                }
+                                CompactButton {
+                                    objectName: "settingsStreamingRefresh"
+                                    implicitWidth: 130; text: "Check status"
+                                    enabled: streamingCard.available
+                                    onClicked: sunshineSettings.refreshStatus()
+                                }
+                            }
+                            Text {
+                                objectName: "settingsStreamingConfigDir"
+                                Layout.fillWidth: true
+                                text: streamingCard.available ? ("Config folder: " + sunshineSettings.configDir) : ""
+                                color: Theme.muted; font.family: "monospace"; font.pixelSize: 12; elide: Text.ElideMiddle
+                            }
+                            CheckBox {
+                                objectName: "settingsPublishToMoonlight"
+                                text: "Publish library to Moonlight"
+                                palette.windowText: Theme.text
+                                enabled: streamingCard.available
+                                checked: streamingCard.available && sunshineSettings.publishEnabled
+                                onToggled: sunshineSettings.setPublishEnabled(checked)
+                            }
+                            RowLayout {
+                                Layout.fillWidth: true; spacing: 8
+                                Text { text: "Games to publish"; color: Theme.muted; font.family: Theme.family; font.pixelSize: 13; Layout.preferredWidth: 130 }
+                                CompactCombo {
+                                    objectName: "settingsStreamingFilter"
+                                    Layout.preferredWidth: 220
+                                    enabled: streamingCard.available
+                                    model: streamingCard.filterOptions
+                                    textRole: "label"
+                                    currentIndex: {
+                                        if (!streamingCard.available) return 0
+                                        for (var i = 0; i < streamingCard.filterOptions.length; ++i)
+                                            if (streamingCard.filterOptions[i].mode === sunshineSettings.filterMode) return i
+                                        return 0
+                                    }
+                                    onActivated: function(index) {
+                                        sunshineSettings.setFilterMode(streamingCard.filterOptions[index].mode)
+                                    }
+                                }
+                                CompactCombo {
+                                    objectName: "settingsStreamingCategory"
+                                    Layout.preferredWidth: 220
+                                    visible: streamingCard.available && sunshineSettings.filterMode === "category"
+                                    enabled: streamingCard.available && sunshineSettings.categoryOptions.length > 0
+                                    model: streamingCard.available ? sunshineSettings.categoryOptions : []
+                                    currentIndex: {
+                                        if (!streamingCard.available) return -1
+                                        var cats = sunshineSettings.categoryOptions
+                                        for (var i = 0; i < cats.length; ++i)
+                                            if (cats[i] === sunshineSettings.filterCategory) return i
+                                        return cats.length > 0 ? 0 : -1
+                                    }
+                                    onActivated: function(index) {
+                                        var cats = sunshineSettings.categoryOptions
+                                        if (index >= 0 && index < cats.length)
+                                            sunshineSettings.setFilterCategory(cats[index])
+                                    }
+                                }
+                            }
+                            RowLayout {
+                                Layout.fillWidth: true; spacing: 8
+                                CompactButton {
+                                    objectName: "settingsStreamingPublishNow"
+                                    implicitWidth: 150; text: "Publish now"
+                                    enabled: streamingCard.available
+                                    onClicked: sunshineSettings.publishNow()
+                                }
+                                CompactButton {
+                                    objectName: "settingsStreamingRemove"
+                                    implicitWidth: 270; text: "Remove Waystone games from Moonlight"
+                                    enabled: streamingCard.available
+                                    onClicked: sunshineSettings.removePublishedGames()
+                                }
+                            }
+                            Text {
+                                objectName: "settingsStreamingNotice"
+                                Layout.fillWidth: true
+                                visible: streamingCard.available && sunshineSettings.lastActionNotice.length > 0
+                                text: streamingCard.available ? sunshineSettings.lastActionNotice : ""
                                 color: Theme.muted; font.family: Theme.family; font.pixelSize: 12; wrapMode: Text.WordWrap
                             }
                         }

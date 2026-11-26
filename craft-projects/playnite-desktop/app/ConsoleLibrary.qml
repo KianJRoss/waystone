@@ -3978,6 +3978,27 @@ FocusScope {
                                 }
                             }
 
+                            BigScreenFocusable {
+                                focusId: "gameStreamingRow"
+                                focusScope: "game"
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 46
+                                RowLayout {
+                                    anchors.fill: parent; anchors.leftMargin: 16; anchors.rightMargin: 16
+                                    Text { textFormat: Text.PlainText; text: "Streaming"; color: Theme.text; font.family: Theme.family; font.pixelSize: 14; font.bold: true }
+                                    Item { Layout.fillWidth: true }
+                                    Text { textFormat: Text.PlainText;
+                                        objectName: "gameStreamingValue"
+                                        text: (consoleRoot.metaRev >= 0 && typeof sunshineSettings !== "undefined" && sunshineSettings)
+                                              ? sunshineSettings.bigScreenStatus
+                                              : ((consoleRoot.metaRev >= 0 && typeof bigScreenView !== "undefined" && bigScreenView)
+                                                 ? bigScreenView.streamingStatusLabel()
+                                                 : "Off")
+                                        color: Theme.muted; font.family: Theme.family; font.pixelSize: 13
+                                    }
+                                }
+                            }
+
                             Item { Layout.fillHeight: true }
                         }
                     }
