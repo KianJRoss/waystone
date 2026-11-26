@@ -39,3 +39,47 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libevdev2
       - name: Build and test (fixtures only, no devices)
         run: bash components/controller_studio/src/headless/run_tests.sh
+
+  packages:
+    name: Linux packages (AppImage, .deb, .rpm)
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write   # only used to attach packages to a release when a v* tag is pushed
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - name: Packaging & X11/Qt runtime dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            squashfs-tools libevdev2 libegl1 libgl1 libfontconfig1 libdbus-1-3 \
+            libxkbcommon0 libxkbcommon-x11-0 libxcb-cursor0 libxcb-icccm4 \
+            libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-shape0 \
+            libxcb-xinerama0 libxcb-xkb1 libasound2t64 libnss3 libxcomposite1 \
+            libxdamage1 libxrandr2 libxtst6 xvfb
+      - name: Build AppImage
+        run: bash packaging/appimage/build_appimage.sh --output-dir dist
+      - name: Smoke-test AppImage offscreen
+        env:
+          APPIMAGE_EXTRACT_AND_RUN: "1"
+          QT_QPA_PLATFORM: offscreen
+        run: ./dist/Waystone-*-x86_64.AppImage --smoke-test
+      - name: Build .deb and .rpm packages (nfpm)
+        run: bash packaging/nfpm/build_deb_rpm.sh --output-dir dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: waystone-linux-packages
+          path: |
+            dist/*.AppImage
+            dist/*.deb
+            dist/*.rpm
+      - name: Attach packages to the GitHub release (version tags only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || gh release create "$GITHUB_REF_NAME" --title "Waystone ${GITHUB_REF_NAME#v}" --notes "See the README for install steps."
+          gh release upload "$GITHUB_REF_NAME" dist/*.AppImage dist/*.deb dist/*.rpm --clobber

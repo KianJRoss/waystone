@@ -1352,7 +1352,8 @@ ApplicationWindow {
             Text { Layout.fillWidth: true; text: typeof steamLibrarySettings !== "undefined" && steamLibrarySettings && !steamLibrarySettings.configured ? "• Add Steam Web API details to include owned games that are not installed here." : "• Steam library account is connected; installed games are still determined locally."; color: Theme.muted; font.family: Theme.family; font.pixelSize: 12; wrapMode: Text.WordWrap }
             Text { Layout.fillWidth: true; text: typeof ribbonArtworkSettings !== "undefined" && ribbonArtworkSettings && !ribbonArtworkSettings.keyConfigured ? "• SteamGridDB key is optional; Steam, Epic and GOG artwork sources are checked on demand." : "• SteamGridDB artwork fallback is configured."; color: Theme.muted; font.family: Theme.family; font.pixelSize: 12; wrapMode: Text.WordWrap }
             Text { Layout.fillWidth: true; text: typeof launcherLibrary !== "undefined" && launcherLibrary && launcherLibrary.sourceStates.Emulation && Number(launcherLibrary.sourceStates.Emulation.configured_roots) === 0 ? "• Add ROM folders from Emulation to include your existing ROM collection." : "• ROM folders are configured; Waystone only scans those selected folders."; color: Theme.muted; font.family: Theme.family; font.pixelSize: 12; wrapMode: Text.WordWrap }
-            Text { Layout.fillWidth: true; text: "• Connect Epic, GOG or Amazon in Accounts to import their cached owned-game libraries. Set up virtual-controller access in Controllers if /dev/uinput or /dev/uhid is unavailable."; color: Theme.muted; font.family: Theme.family; font.pixelSize: 12; wrapMode: Text.WordWrap }
+            Text { Layout.fillWidth: true; text: "• Connect Epic, GOG or Amazon in Accounts to import their cached owned-game libraries."; color: Theme.muted; font.family: Theme.family; font.pixelSize: 12; wrapMode: Text.WordWrap }
+            Text { objectName: "firstRunVirtualPadGuidance"; Layout.fillWidth: true; text: typeof firstRunGuide !== "undefined" && firstRunGuide ? firstRunGuide.virtualPadGuidance : "• Set up virtual-controller access in Controllers if /dev/uinput or /dev/uhid is unavailable."; color: Theme.muted; font.family: Theme.family; font.pixelSize: 12; wrapMode: Text.WordWrap }
             Text { Layout.fillWidth: true; visible: typeof firstRunGuide !== "undefined" && !!(firstRunGuide && firstRunGuide.status); text: typeof firstRunGuide !== "undefined" && firstRunGuide ? firstRunGuide.status : ""; color: Theme.text; font.family: Theme.family; font.pixelSize: 12; wrapMode: Text.WordWrap }
             Item { Layout.fillHeight: true }
             RowLayout {
@@ -1360,6 +1361,13 @@ ApplicationWindow {
                 CompactButton { objectName: "firstRunAccounts"; text: "Accounts"; onClicked: { firstRunGuide.dismiss(); settingsDashboard.selectedCategory = 0; root.openSettings() } }
                 CompactButton { objectName: "firstRunRoms"; text: "ROM folders"; onClicked: { firstRunGuide.dismiss(); root.navigatePage("emulation") } }
                 CompactButton { objectName: "firstRunControllers"; text: "Controllers"; onClicked: { firstRunGuide.dismiss(); root.openControllers() } }
+                CompactButton {
+                    objectName: "firstRunInstallUdevRule"
+                    visible: typeof firstRunGuide !== "undefined" && firstRunGuide !== null && !firstRunGuide.virtualPadAccessReady
+                    text: "Install udev rule (pkexec)"
+                    hint: "Install packaging/arch/70-waystone-input.rules to /etc/udev/rules.d/ and reload udev"
+                    onClicked: if (firstRunGuide) firstRunGuide.installUdevRule()
+                }
                 Item { Layout.fillWidth: true }
                 CompactButton { objectName: "finishFirstRunGuide"; text: "Done"; onClicked: firstRunGuide.dismiss() }
             }

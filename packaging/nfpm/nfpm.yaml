@@ -1,0 +1,71 @@
+# nFPM configuration for Waystone .deb and .rpm packages.
+# Mirrors the exact read-only /usr/share/waystone layout of packaging/arch/PKGBUILD.
+name: "waystone"
+arch: "amd64"
+platform: "linux"
+version: "${WAYSTONE_VERSION}"
+release: "1"
+section: "games"
+priority: "optional"
+maintainer: "Waystone Contributors <noreply@github.com>"
+description: |
+  Unified Linux game library, launcher, controller studio, and big-screen interface.
+  All mutable user data stays under XDG directories (~/.local/share/waystone, ~/.config/waystone).
+homepage: "https://github.com/KianJRoss/waystone"
+license: "AGPL-3.0-only"
+
+overrides:
+  deb:
+    depends:
+      - python3
+      - python3-pyside6.qtcore
+      - python3-pyside6.qtgui
+      - python3-pyside6.qtqml
+      - python3-pyside6.qtquick
+      - python3-pyside6.qtquickcontrols2
+      - python3-pyside6.qtsvg
+      - python3-pyside6.qtmultimedia
+      - python3-httpx
+      - python3-yaml
+      - dotnet-runtime-10.0
+      - libevdev2
+      - libarchive-tools
+    recommends:
+      - python3-pyside6.qtwebenginequick
+      - python3-websockets
+  rpm:
+    depends:
+      - python3
+      - python3-pyside6
+      - python3-httpx
+      - python3-pyyaml
+      - dotnet-runtime-10.0
+      - libevdev
+      - bsdtar
+
+contents:
+  - src: "./pkg/usr/bin/waystone"
+    dst: "/usr/bin/waystone"
+    file_info:
+      mode: 0755
+  - src: "./pkg/usr/share/applications/waystone.desktop"
+    dst: "/usr/share/applications/waystone.desktop"
+    file_info:
+      mode: 0644
+  - src: "./pkg/usr/lib/udev/rules.d/70-waystone-input.rules"
+    dst: "/usr/lib/udev/rules.d/70-waystone-input.rules"
+    file_info:
+      mode: 0644
+  - src: "./pkg/usr/lib/systemd/user/waystone.service"
+    dst: "/usr/lib/systemd/user/waystone.service"
+    file_info:
+      mode: 0644
+  - src: "./pkg/usr/share/icons/hicolor"
+    dst: "/usr/share/icons/hicolor"
+    type: tree
+  - src: "./pkg/usr/share/licenses/waystone-launcher"
+    dst: "/usr/share/licenses/waystone-launcher"
+    type: tree
+  - src: "./pkg/usr/lib/waystone"
+    dst: "/usr/lib/waystone"
+    type: tree
