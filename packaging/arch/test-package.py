@@ -48,11 +48,11 @@ package
             "usr/share/applications/waystone.desktop",
             "usr/lib/udev/rules.d/70-waystone-input.rules",
             "usr/lib/systemd/user/waystone.service",
-            "usr/share/waystone/open-waystone.sh",
-            "usr/share/waystone/craft-projects/playnite-desktop/app/app.py",
-            "usr/share/waystone/components/controller_studio/headless/publish/UnifiedController.Headless",
+            "usr/lib/waystone/open-waystone.sh",
+            "usr/lib/waystone/craft-projects/playnite-desktop/app/app.py",
+            "usr/lib/waystone/components/controller_studio/headless/publish/UnifiedController.Headless",
             "usr/share/icons/hicolor/512x512/apps/waystone.png",
-            "usr/share/licenses/waystone/LICENSE",
+            "usr/share/licenses/waystone-launcher/LICENSE",
         ]
         missing = [rel for rel in expected if not (pkgdir / rel).exists()]
         if missing:
@@ -73,9 +73,9 @@ package
             "XDG_STATE_HOME": str(xdg_state), "QT_QPA_PLATFORM": "offscreen", "QT_QUICK_BACKEND": "software",
             "PYTHONDONTWRITEBYTECODE": "1", "PYTHONPYCACHEPREFIX": str(tmpdir / "pycache"),
         }
-        app = pkgdir / "usr/share/waystone/craft-projects/playnite-desktop/app/app.py"
+        app = pkgdir / "usr/lib/waystone/craft-projects/playnite-desktop/app/app.py"
         run("python3", "-B", str(app), "--smoke-test", cwd=tmpdir, env=env)
-        if any(p.suffix in {".pyc", ".pyo"} for p in (pkgdir / "usr/share/waystone").rglob("*")):
+        if any(p.suffix in {".pyc", ".pyo"} for p in (pkgdir / "usr/lib/waystone").rglob("*")):
             raise SystemExit("Python bytecode appeared in the installed application tree")
         print("PASS package() file manifest, controller build, and read-only smoke test")
         print("PASS isolated user data roots:", xdg_data, xdg_config, xdg_state)

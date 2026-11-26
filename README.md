@@ -43,7 +43,7 @@ makepkg -si
 
 Do not install a similarly named third-party package and assume it is this project.
 
-The draft package targets Arch Linux x86_64 and installs Waystone read-only under `/usr/share/waystone`. It builds the .NET 10 controller engine from source. The optional user service is not enabled automatically.
+The draft package targets Arch Linux x86_64 and installs Waystone read-only under `/usr/lib/waystone`. It builds the .NET 10 controller engine from source. The optional user service is not enabled automatically.
 
 ### Run from a source checkout
 

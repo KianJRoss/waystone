@@ -1,4 +1,4 @@
-pkgbase = waystone
+pkgbase = waystone-launcher
 	pkgdesc = Unified Linux game library, launcher, controller studio, and big-screen interface
 	pkgver = 0.1.0
 	pkgrel = 1
@@ -23,8 +23,9 @@ pkgbase = waystone
 	optdepends = gamescope: optional gamescope session support
 	optdepends = python-websockets: Xodus chat
 	optdepends = python-mcp: Herald assistant tools (waystone MCP server)
+	conflicts = waystone
 	options = !debug
 	source = waystone-0.1.0.tar.gz::https://github.com/KianJRoss/waystone/archive/refs/tags/v0.1.0.tar.gz
 	sha256sums = SKIP
 
-pkgname = waystone
+pkgname = waystone-launcher

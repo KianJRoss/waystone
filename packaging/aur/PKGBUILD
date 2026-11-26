@@ -1,0 +1,79 @@
+# Maintainer: Kian Ross <151791556+KianJRoss@users.noreply.github.com>
+pkgname=waystone-launcher
+_name=waystone   # the app and its release archive are called waystone
+pkgver=0.1.0
+pkgrel=1
+pkgdesc='Unified Linux game library, launcher, controller studio, and big-screen interface'
+arch=('x86_64')
+# 'waystone' on the AUR is a different project (a Path of Exile 2 overlay); both may ship /usr/bin/waystone.
+conflicts=('waystone')
+url='https://github.com/KianJRoss/waystone'
+license=('AGPL-3.0-only')
+depends=('python' 'pyside6' 'qt6-multimedia' 'qt6-svg' 'qt6-webengine' 'python-httpx' 'python-yaml'
+         'dotnet-runtime' 'libevdev' 'libarchive')
+makedepends=('dotnet-sdk' 'aspnet-targeting-pack')
+options=('!debug')
+optdepends=(
+  'steam: Steam library and social integration'
+  'heroic-games-launcher: discover existing Epic/GOG/Amazon installations'
+  'lutris: discover and launch Lutris games'
+  'gamescope: optional gamescope session support'
+  'python-websockets: Xodus chat'
+  'python-mcp: Herald assistant tools (waystone MCP server)'
+)
+_repo='KianJRoss/waystone'
+source=("${_name}-${pkgver}.tar.gz::https://github.com/${_repo}/archive/refs/tags/v${pkgver}.tar.gz")
+sha256sums=('31c8d650ebd2582b08021c8a9a5d68de3a494a1ffa5c04b5760470dfed8c99d2')
+
+build() {
+  local _source_dir="${srcdir}/${_name}-${pkgver}"   # $srcdir only exists inside makepkg functions
+  cd "${_source_dir}"
+  DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 \
+    dotnet publish components/controller_studio/src/headless/UnifiedController.Headless.csproj \
+      -c Release --self-contained false -p:ContinuousIntegrationBuild=true -p:DebugType=none \
+      -o "${srcdir}/controller-publish"
+}
+
+package() {
+  local _source_dir="${srcdir}/${_name}-${pkgver}"
+  install -d "${pkgdir}/usr/lib/waystone" \
+    "${pkgdir}/usr/bin" "${pkgdir}/usr/share/applications" \
+    "${pkgdir}/usr/share/icons/hicolor" "${pkgdir}/usr/lib/udev/rules.d" \
+    "${pkgdir}/usr/lib/systemd/user"
+
+  # Read-only application tree; all mutable data belongs under XDG directories.
+  cp -a "${_source_dir}/." "${pkgdir}/usr/lib/waystone/"
+  install -d "${pkgdir}/usr/lib/waystone/components/controller_studio/headless/publish"
+  cp -a "${srcdir}/controller-publish/." \
+    "${pkgdir}/usr/lib/waystone/components/controller_studio/headless/publish/"
+  # Readable by every user, never writable; keep only real programs executable.
+  chmod -R u=rwX,go=rX "${pkgdir}/usr/lib/waystone"
+  chmod 755 "${pkgdir}/usr/lib/waystone/open-waystone.sh" \
+    "${pkgdir}/usr/lib/waystone/components/controller_studio/headless/publish/UnifiedController.Headless"
+
+  # Leftover engine build output from build() is not part of the app.
+  rm -rf "${pkgdir}/usr/lib/waystone/components/controller_studio/src/headless/bin" \
+    "${pkgdir}/usr/lib/waystone/components/controller_studio/src/headless/obj"
+  # Arch keeps architecture-specific programs (the .NET engine) under /usr/lib, so the app lives in /usr/lib/waystone.
+  install -d "${pkgdir}/usr/bin"
+  printf '#!/bin/sh\nexec /usr/lib/waystone/open-waystone.sh "$@"\n' > "${pkgdir}/usr/bin/waystone"
+  chmod 755 "${pkgdir}/usr/bin/waystone"
+  install -Dm644 "${_source_dir}/packaging/arch/waystone.desktop" \
+    "${pkgdir}/usr/share/applications/waystone.desktop"
+  install -Dm644 "${_source_dir}/packaging/arch/70-waystone-input.rules" \
+    "${pkgdir}/usr/lib/udev/rules.d/70-waystone-input.rules"
+  install -Dm644 "${_source_dir}/packaging/arch/waystone.service" \
+    "${pkgdir}/usr/lib/systemd/user/waystone.service"
+
+  for size in 16 24 32 48 64 128 256 512; do
+    install -Dm644 "${_source_dir}/assets/brand/png/waystone-${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/apps/waystone.png"
+  done
+  install -Dm644 "${_source_dir}/assets/brand/waystone-icon.svg" \
+    "${pkgdir}/usr/share/icons/hicolor/scalable/apps/waystone.svg"
+  install -Dm644 "${_source_dir}/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+
+  # Fail the package function if the app's install tree is not read-only safe.
+  [[ -x "${pkgdir}/usr/bin/waystone" ]]
+  [[ -x "${pkgdir}/usr/lib/waystone/components/controller_studio/headless/publish/UnifiedController.Headless" ]]
+}

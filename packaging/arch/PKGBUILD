@@ -1,10 +1,13 @@
 # Arch package recipe for Waystone (not in the AUR yet). The in-repo copy keeps sha256sums=SKIP because it lives inside
 # the tarball it would checksum; an AUR copy pins the release tarball's SHA-256.
-pkgname=waystone
+pkgname=waystone-launcher
+_name=waystone   # the app and its release archive are called waystone
 pkgver=0.1.0
 pkgrel=1
 pkgdesc='Unified Linux game library, launcher, controller studio, and big-screen interface'
 arch=('x86_64')
+# 'waystone' on the AUR is a different project (a Path of Exile 2 overlay); both may ship /usr/bin/waystone.
+conflicts=('waystone')
 url='https://github.com/KianJRoss/waystone'
 license=('AGPL-3.0-only')
 depends=('python' 'pyside6' 'qt6-multimedia' 'qt6-svg' 'qt6-webengine' 'python-httpx' 'python-yaml'
@@ -20,11 +23,11 @@ optdepends=(
   'python-mcp: Herald assistant tools (waystone MCP server)'
 )
 _repo='KianJRoss/waystone'
-source=("${pkgname}-${pkgver}.tar.gz::https://github.com/${_repo}/archive/refs/tags/v${pkgver}.tar.gz")
+source=("${_name}-${pkgver}.tar.gz::https://github.com/${_repo}/archive/refs/tags/v${pkgver}.tar.gz")
 sha256sums=('SKIP')
 
 build() {
-  local _source_dir="${srcdir}/${pkgname}-${pkgver}"   # $srcdir only exists inside makepkg functions
+  local _source_dir="${srcdir}/${_name}-${pkgver}"   # $srcdir only exists inside makepkg functions
   cd "${_source_dir}"
   DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 \
     dotnet publish components/controller_studio/src/headless/UnifiedController.Headless.csproj \
@@ -33,24 +36,29 @@ build() {
 }
 
 package() {
-  local _source_dir="${srcdir}/${pkgname}-${pkgver}"
-  install -d "${pkgdir}/usr/share/waystone" \
+  local _source_dir="${srcdir}/${_name}-${pkgver}"
+  install -d "${pkgdir}/usr/lib/waystone" \
     "${pkgdir}/usr/bin" "${pkgdir}/usr/share/applications" \
     "${pkgdir}/usr/share/icons/hicolor" "${pkgdir}/usr/lib/udev/rules.d" \
     "${pkgdir}/usr/lib/systemd/user"
 
   # Read-only application tree; all mutable data belongs under XDG directories.
-  cp -a "${_source_dir}/." "${pkgdir}/usr/share/waystone/"
-  install -d "${pkgdir}/usr/share/waystone/components/controller_studio/headless/publish"
+  cp -a "${_source_dir}/." "${pkgdir}/usr/lib/waystone/"
+  install -d "${pkgdir}/usr/lib/waystone/components/controller_studio/headless/publish"
   cp -a "${srcdir}/controller-publish/." \
-    "${pkgdir}/usr/share/waystone/components/controller_studio/headless/publish/"
+    "${pkgdir}/usr/lib/waystone/components/controller_studio/headless/publish/"
   # Readable by every user, never writable; keep only real programs executable.
-  chmod -R u=rwX,go=rX "${pkgdir}/usr/share/waystone"
-  chmod 755 "${pkgdir}/usr/share/waystone/open-waystone.sh" \
-    "${pkgdir}/usr/share/waystone/components/controller_studio/headless/publish/UnifiedController.Headless"
+  chmod -R u=rwX,go=rX "${pkgdir}/usr/lib/waystone"
+  chmod 755 "${pkgdir}/usr/lib/waystone/open-waystone.sh" \
+    "${pkgdir}/usr/lib/waystone/components/controller_studio/headless/publish/UnifiedController.Headless"
 
-  install -Dm755 "${_source_dir}/packaging/arch/waystone-launcher" \
-    "${pkgdir}/usr/bin/waystone"
+  # Leftover engine build output from build() is not part of the app.
+  rm -rf "${pkgdir}/usr/lib/waystone/components/controller_studio/src/headless/bin" \
+    "${pkgdir}/usr/lib/waystone/components/controller_studio/src/headless/obj"
+  # Arch keeps architecture-specific programs (the .NET engine) under /usr/lib, so the app lives in /usr/lib/waystone.
+  install -d "${pkgdir}/usr/bin"
+  printf '#!/bin/sh\nexec /usr/lib/waystone/open-waystone.sh "$@"\n' > "${pkgdir}/usr/bin/waystone"
+  chmod 755 "${pkgdir}/usr/bin/waystone"
   install -Dm644 "${_source_dir}/packaging/arch/waystone.desktop" \
     "${pkgdir}/usr/share/applications/waystone.desktop"
   install -Dm644 "${_source_dir}/packaging/arch/70-waystone-input.rules" \
@@ -68,5 +76,5 @@ package() {
 
   # Fail the package function if the app's install tree is not read-only safe.
   [[ -x "${pkgdir}/usr/bin/waystone" ]]
-  [[ -x "${pkgdir}/usr/share/waystone/components/controller_studio/headless/publish/UnifiedController.Headless" ]]
+  [[ -x "${pkgdir}/usr/lib/waystone/components/controller_studio/headless/publish/UnifiedController.Headless" ]]
 }

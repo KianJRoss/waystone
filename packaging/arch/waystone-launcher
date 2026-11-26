@@ -1,3 +1,0 @@
-#!/bin/sh
-# Waystone's own launcher handles settings (~/.config/waystone/waystone.env, launch-args) and the Qt environment.
-exec /usr/share/waystone/open-waystone.sh "$@"

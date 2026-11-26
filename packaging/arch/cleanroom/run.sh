@@ -12,10 +12,10 @@ pacman -U --noconfirm /build/*.pkg.tar.zst >/tmp/install.log 2>&1 || { tail -20 
 echo "== installed files: $(pacman -Ql waystone | wc -l); launcher: $(command -v waystone)"
 ls -la /usr/lib/udev/rules.d/70-waystone-input.rules /usr/share/applications/waystone.desktop
 # app folder must stay untouched by running it
-find /usr/share/waystone -type f -newer /usr/bin/waystone > /tmp/before.txt || true
+find /usr/lib/waystone -type f -newer /usr/bin/waystone > /tmp/before.txt || true
 su newuser -c 'cd ~ && xvfb-run -a timeout 60 waystone > /tmp/app.log 2>&1; echo "app exit $?" >> /tmp/app.log' || true
 echo "== app log (last lines):"; grep -v "JPEG\|portal" /tmp/app.log | tail -25
 echo "== new user's data:"; su newuser -c 'find ~/.local ~/.config -maxdepth 3 2>/dev/null | head -30'
 echo "== library db:"; su newuser -c 'ls -la ~/.local/share/waystone/library.sqlite3 2>&1'
-echo "== files written into /usr/share/waystone by running it:"; find /usr/share/waystone -newer /usr/bin/waystone -type f | grep -v -x -f /tmp/before.txt | head || true
+echo "== files written into /usr/lib/waystone by running it:"; find /usr/lib/waystone -newer /usr/bin/waystone -type f | grep -v -x -f /tmp/before.txt | head || true
 echo "== CLEANROOM DONE"
