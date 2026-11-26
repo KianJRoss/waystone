@@ -18,6 +18,7 @@ import stat
 
 from native_services.library_repository import LibraryRepository
 from native_services.waystone_paths import xdg_paths
+from native_services.platform import is_windows
 
 MAX_SOURCE_FILE = 10 * 1024 * 1024
 MAX_SOURCE_RECORDS = 30000
@@ -132,6 +133,11 @@ def collect_launcher_library(home=None, *, data_dir=None, config_dir=None, rom_c
     roots = xdg_paths(home)
     data_dir = Path(data_dir or roots['data'])
     config_dir = Path(config_dir or roots['config'])
+    if is_windows():
+        from native_services.windows_catalog import collect_windows_launcher_library
+        return collect_windows_launcher_library(home=home, data_dir=data_dir, config_dir=config_dir,
+                                                rom_config_dir=rom_config_dir,
+                                                local_games_path=local_games_path)
     rows = {}
     states = {}
 

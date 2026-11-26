@@ -10,6 +10,8 @@ import threading
 import time
 import unittest
 
+import pytest
+
 from PySide6.QtCore import QCoreApplication, QEvent
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtNetwork import QLocalSocket
@@ -93,6 +95,7 @@ class FakeAssistantQmlRoot(FakeQmlRoot):
         self.phase = "idle"
 
 
+@pytest.mark.linux_only
 class WaystoneControlSocketTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -338,6 +341,7 @@ class FakeSocketPeer:
         self.thread.join(timeout=1)
 
 
+@pytest.mark.linux_only
 class WaystoneMcpLiveToolTests(unittest.IsolatedAsyncioTestCase):
     async def test_mcp_tools_use_fake_unix_socket_and_no_command_surface(self):
         with tempfile.TemporaryDirectory() as tmp:
