@@ -50,7 +50,7 @@ The draft package targets Arch Linux x86_64 and installs Waystone read-only unde
 On Arch Linux, install the runtime dependencies, then start Waystone from the checkout:
 
 ```bash
-sudo pacman -S python pyside6 qt6-multimedia qt6-svg qt6-webengine python-httpx python-yaml dotnet-runtime libevdev
+sudo pacman -S python pyside6 qt6-multimedia qt6-svg qt6-webengine python-httpx python-yaml dotnet-runtime libevdev libarchive
 ./open-waystone.sh
 ```
 

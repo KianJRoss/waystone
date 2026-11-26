@@ -16,6 +16,7 @@ pkgbase = waystone
 	depends = python-yaml
 	depends = dotnet-runtime
 	depends = libevdev
+	depends = libarchive
 	optdepends = steam: Steam library and social integration
 	optdepends = heroic-games-launcher: discover existing Epic/GOG/Amazon installations
 	optdepends = lutris: discover and launch Lutris games

@@ -8,7 +8,7 @@ arch=('x86_64')
 url='https://github.com/KianJRoss/waystone'
 license=('AGPL-3.0-only')
 depends=('python' 'pyside6' 'qt6-multimedia' 'qt6-svg' 'qt6-webengine' 'python-httpx' 'python-yaml'
-         'dotnet-runtime' 'libevdev')
+         'dotnet-runtime' 'libevdev' 'libarchive')
 makedepends=('dotnet-sdk' 'aspnet-targeting-pack')
 options=('!debug')
 optdepends=(

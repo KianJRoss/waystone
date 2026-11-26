@@ -30,13 +30,9 @@ class _McpStdioClient:
     """Minimal JSON-RPC 2.0 stdio client driving real tools/waystone_mcp.py."""
 
     def __init__(self, organizer_db: Path, catalog_link_db: Path) -> None:
+        # The test interpreter already has mcp (requirements-test.txt); no machine-specific uv path.
         cmd = [
-            "/usr/bin/uv",
-            "run",
-            "--offline",
-            "--with",
-            "mcp",
-            "python",
+            sys.executable,
             str(REPO_ROOT / "tools" / "waystone_mcp.py"),
             "--organizer-db",
             str(organizer_db),
