@@ -80,6 +80,12 @@ Item {
                 studio: root.studio
             }
 
+            // Discord Push-to-Talk with Vesktop (Mod-key style, saved in the profile being edited)
+            PushToTalkSection {
+                service: root.service
+                studio: root.studio
+            }
+
             // Card 1: Hyprland Global Hotkeys
             Rectangle {
                 Layout.fillWidth: true; Layout.preferredHeight: 110

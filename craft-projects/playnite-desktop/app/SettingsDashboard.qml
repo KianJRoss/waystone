@@ -21,10 +21,12 @@ WorkspacePage {
     onVisibleChanged: {
         if (visible && selectedCategory === 0) checkAccountKeyrings()
         if (visible && selectedCategory === 5 && typeof sunshineSettings !== "undefined" && sunshineSettings) sunshineSettings.refreshStatus()
+        if (visible && selectedCategory === 6 && typeof discordView !== "undefined" && discordView) discordView.refreshClients()
     }
     onSelectedCategoryChanged: {
         if (visible && selectedCategory === 0) checkAccountKeyrings()
         if (visible && selectedCategory === 5 && typeof sunshineSettings !== "undefined" && sunshineSettings) sunshineSettings.refreshStatus()
+        if (visible && selectedCategory === 6 && typeof discordView !== "undefined" && discordView) discordView.refreshClients()
     }
     readonly property var categories: [
         { name: "Accounts", desc: "Store and platform sign-ins" },
@@ -33,6 +35,7 @@ WorkspacePage {
         { name: "Games", desc: "Which monitor games open on" },
         { name: "General", desc: "Sounds and how Waystone feels" },
         { name: "Streaming", desc: "Your library in Moonlight via Sunshine" },
+        { name: "Social", desc: "Discord Rich Presence and client hand-off" },
         { name: "Advanced", desc: "Catalog and connection inspectors, diagnostics" }
     ]
 
@@ -531,6 +534,103 @@ WorkspacePage {
                                 Layout.fillWidth: true
                                 visible: streamingCard.available && sunshineSettings.lastActionNotice.length > 0
                                 text: streamingCard.available ? sunshineSettings.lastActionNotice : ""
+                                color: Theme.muted; font.family: Theme.family; font.pixelSize: 12; wrapMode: Text.WordWrap
+                            }
+                        }
+                    }
+
+                    // Social (Discord Rich Presence & Client Hand-Off)
+                    ColumnLayout {
+                        spacing: 14
+                        Card {
+                            id: discordCard
+                            objectName: "settingsDiscordCard"
+                            heading: "Discord"
+                            note: "Show the game you are playing in Discord over local IPC ($XDG_RUNTIME_DIR/discord-ipc-0..9) and launch or focus your preferred Discord client (Vesktop, official Discord, Legcord or WebCord). Waystone never reads or stores a Discord user token and never contacts Discord's user REST/Gateway API."
+                            readonly property bool available: typeof discordView !== "undefined" && discordView
+                            RowLayout {
+                                Layout.fillWidth: true; spacing: 8
+                                Text {
+                                    objectName: "settingsDiscordStatus"
+                                    Layout.fillWidth: true
+                                    text: discordCard.available ? discordView.statusSummary : "Discord integration unavailable"
+                                    color: Theme.text; font.family: Theme.family; font.pixelSize: 13; wrapMode: Text.WordWrap
+                                }
+                                CompactButton {
+                                    objectName: "settingsRefreshDiscordClients"
+                                    implicitWidth: 110; text: "Refresh"
+                                    enabled: discordCard.available
+                                    onClicked: discordView.refreshClients()
+                                }
+                            }
+                            CheckBox {
+                                objectName: "settingsDiscordRichPresenceSwitch"
+                                text: "Show current game in Discord (Rich Presence)"
+                                palette.windowText: Theme.text
+                                enabled: discordCard.available
+                                checked: discordCard.available && discordView.richPresenceEnabled
+                                onToggled: discordView.setRichPresenceEnabled(checked)
+                            }
+                            RowLayout {
+                                Layout.fillWidth: true; spacing: 8
+                                Text { text: "Discord client"; color: Theme.muted; font.family: Theme.family; font.pixelSize: 13; Layout.preferredWidth: 130 }
+                                CompactCombo {
+                                    objectName: "settingsDiscordClientCombo"
+                                    Layout.preferredWidth: 240
+                                    enabled: discordCard.available
+                                    model: discordCard.available ? discordView.clientChoices : []
+                                    textRole: "label"
+                                    currentIndex: {
+                                        if (!discordCard.available) return 0
+                                        var choices = discordView.clientChoices
+                                        for (var i = 0; i < choices.length; ++i)
+                                            if (choices[i].id === discordView.preferredClientId) return i
+                                        return 0
+                                    }
+                                    onActivated: function(index) {
+                                        var choices = discordView.clientChoices
+                                        if (index >= 0 && index < choices.length)
+                                            discordView.setPreferredClient(choices[index].id)
+                                    }
+                                }
+                                CompactButton {
+                                    objectName: "settingsOpenDiscordButton"
+                                    implicitWidth: 140; text: "Open Discord"
+                                    enabled: discordCard.available
+                                    onClicked: discordView.openDiscord()
+                                }
+                            }
+                            RowLayout {
+                                Layout.fillWidth: true; spacing: 8
+                                Text { text: "Application ID"; color: Theme.muted; font.family: Theme.family; font.pixelSize: 13; Layout.preferredWidth: 130 }
+                                TextField {
+                                    id: discordAppIdField
+                                    objectName: "settingsDiscordAppIdField"
+                                    Layout.preferredWidth: 240
+                                    enabled: discordCard.available
+                                    text: discordCard.available ? discordView.appId : ""
+                                    placeholderText: "Numeric Discord Application ID"
+                                    placeholderTextColor: Theme.muted
+                                    color: Theme.text
+                                    background: Rectangle { color: Theme.hover; radius: 6; border.color: Theme.line }
+                                }
+                                CompactButton {
+                                    objectName: "settingsSaveDiscordAppId"
+                                    implicitWidth: 110; text: "Save ID"
+                                    enabled: discordCard.available && discordAppIdField.text.trim().length > 0
+                                    onClicked: discordView.setAppId(discordAppIdField.text)
+                                }
+                            }
+                            Text {
+                                Layout.fillWidth: true
+                                text: "Discord's local IPC handshake requires a public numeric Application ID (registered at discord.com/developers/applications > New Application > Application ID; no client secret or bot token is used). Waystone has no ID of its own yet, so \"Playing\" status stays off until you paste one here."
+                                color: Theme.muted; font.family: Theme.family; font.pixelSize: 11; wrapMode: Text.WordWrap
+                            }
+                            Text {
+                                objectName: "settingsDiscordNotice"
+                                Layout.fillWidth: true
+                                visible: discordCard.available && discordView.lastNotice.length > 0
+                                text: discordCard.available ? discordView.lastNotice : ""
                                 color: Theme.muted; font.family: Theme.family; font.pixelSize: 12; wrapMode: Text.WordWrap
                             }
                         }

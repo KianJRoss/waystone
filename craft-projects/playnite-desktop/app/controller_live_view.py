@@ -71,14 +71,14 @@ class ControllerLiveView(QObject):
         self.acquire('legacy')
     @Slot(str)
     def acquire(self,owner):
-        if self._closed or owner not in {'legacy','studio','navigation','guide','sticks'}:return
+        if self._closed or owner not in {'legacy','studio','navigation','guide','sticks','ptt'}:return
         self._owners.add(owner)
         self._apply_rate()
         if self._active:return
         self._active=True;self._timer.start();self._poll();self.changed.emit()
     def _apply_rate(self):
-        # Only the background Guide watch: a light poll (~12/s); any UI owner gets full rate (~30/s).
-        self._timer.setInterval(80 if self._owners=={'guide'} else 33)
+        # Only the background Guide/PTT watch: a light poll (~12/s); any UI owner gets full rate (~30/s).
+        self._timer.setInterval(80 if self._owners <= {'guide', 'ptt'} else 33)
     @Slot(str)
     def release(self,owner):
         self._owners.discard(owner)

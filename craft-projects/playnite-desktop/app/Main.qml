@@ -1077,6 +1077,7 @@ ApplicationWindow {
             }
         }
         socialView: typeof xodusSocialView !== "undefined" ? xodusSocialView : null
+        discordView: typeof discordService !== "undefined" ? discordService : null
         voiceView: typeof xboxVoiceMedia !== "undefined" ? xboxVoiceMedia : null
         currentGame: typeof launchView !== "undefined" && launchView.activeGame && launchView.activeGame.state === "running" ? ({title:launchView.activeGame.title,platform:"Tracked native session",playtime:""}) : ({})
         onReturnToGameRequested: {
@@ -1154,7 +1155,7 @@ ApplicationWindow {
     Connections { target: saveDashboard; function onVisibleChanged() { root.refreshControllerRouting() } }
     Connections { target: downloadsDashboard; function onVisibleChanged() { root.refreshControllerRouting() } }
     Connections { target: emulationDashboard; function onVisibleChanged() { root.refreshControllerRouting() } }
-    SocialDashboard { id: socialDashboard; parent: workspaceContainer; routed: true; pageId: "friends"; currentPage: root.activePage; onNavigationRequested: function(destination) { root.navigatePage(destination) }; onBackRequested: root.goBack(); onConnectionsRequested: root.openFriendsPlatforms() }
+    SocialDashboard { id: socialDashboard; parent: workspaceContainer; routed: true; pageId: "friends"; currentPage: root.activePage; discordView: typeof discordService !== "undefined" ? discordService : null; onNavigationRequested: function(destination) { root.navigatePage(destination) }; onBackRequested: root.goBack(); onConnectionsRequested: root.openFriendsPlatforms() }
     function openDownloads() { downloadsDashboard.open() }
     GameInstallPrompt { parent: Overlay.overlay }
     DownloadsDashboard { id: downloadsDashboard; parent: workspaceContainer; routed: true; pageId: "downloads"; currentPage: root.activePage; onNavigationRequested: function(destination) { root.navigatePage(destination) }; onBackRequested: root.goBack() }

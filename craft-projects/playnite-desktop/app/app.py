@@ -2,6 +2,7 @@
 import argparse
 import json
 import os
+import shutil
 import sys
 from pathlib import Path
 
@@ -424,6 +425,25 @@ def create_session(application, snapshots=None, organizer=False, view='grid', he
     controller_live = ControllerLiveView(parent=engine)
     application.aboutToQuit.connect(controller_live.shutdown)
     engine.controller_live = controller_live
+    # Discord is deliberately wired into the same owned session surface as launch and
+    # controller state. Headless tests get an isolated settings file, no runtime socket,
+    # no PATH discovery and a no-op process adapter; they can never touch the host client.
+    from discord_view import DiscordView
+    discord_view = DiscordView(
+        settings_path=headless_settings,
+        launch_view=launch_view,
+        controller_view=controller_view,
+        controller_live=controller_live,
+        runtime_dir=(headless_settings.parent / 'runtime') if headless else None,
+        environ={} if headless else None,
+        which=(lambda _name: None) if headless else shutil.which,
+        flatpak_installed=(lambda _app_id: False) if headless else None,
+        spawn_fn=(lambda _argv: None) if headless else None,
+        offline=headless,
+        parent=engine,
+    )
+    application.aboutToQuit.connect(discord_view.shutdown)
+    engine.discord_view = discord_view
     from controller_ui_navigation import ControllerUiNavigation
     controller_navigation = ControllerUiNavigation(controller_live, parent=engine)
     engine.controller_navigation = controller_navigation
@@ -624,6 +644,7 @@ def create_session(application, snapshots=None, organizer=False, view='grid', he
         'steamLibrarySettings': steam_library_settings,
         'firstRunGuide': first_run_guide,
         'launchView': launch_view, 'artworkView': artwork_view,
+        'discordView': discord_view, 'discordService': discord_view,
         'gameProgressView': game_progress, 'pluginFeaturesView': plugin_features, 'emulationManager': emulation_manager, 'modManagement': mod_management,
         'modGameChoices': mod_game_choices,
         'nativeLocalLibrary': local_library,

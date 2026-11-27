@@ -94,6 +94,13 @@ def test_party_panel_exposes_create_leave_volume_mute_devices_and_deafen():
     engine.addImportPath(str(APP))
     fake = FakeVoice()
     social = Social()
+    class FakeDiscord(QObject):
+        def __init__(self): super().__init__(); self.calls = 0
+        @Property(bool)
+        def hasClient(self): return True
+        @Slot(result=bool)
+        def openDiscord(self): self.calls += 1; return True
+    discord = FakeDiscord()
     social._party = {"partyId":"test-party", "members":[{"xuid":"101","gamertag":"Player"}]}
     engine.rootContext().setContextProperty("socialView", social)
     engine.rootContext().setContextProperty("voiceView", fake)
@@ -102,11 +109,17 @@ def test_party_panel_exposes_create_leave_volume_mute_devices_and_deafen():
     assert panel is not None, "\n".join(e.toString() for e in component.errors())
     panel.setProperty("socialView", social)
     panel.setProperty("voiceView", fake)
+    panel.setProperty("discordView", discord)
     panel.setProperty("width", 380); panel.setProperty("height", 400)
     app.processEvents()
     try:
         create = panel.findChild(QObject, "overlayPartyCreate")
         assert create is not None
+        open_discord = panel.findChild(QObject, "overlayOpenDiscord")
+        assert open_discord is not None and open_discord.property("enabled")
+        from PySide6.QtCore import QMetaObject
+        assert QMetaObject.invokeMethod(open_discord, "clicked")
+        assert discord.calls == 1
         children = [o.objectName() for o in panel.findChildren(QObject)]
         assert "overlayInputDevice" in children
         assert len(panel.property("members")) == 1

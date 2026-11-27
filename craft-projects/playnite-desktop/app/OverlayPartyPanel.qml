@@ -9,6 +9,7 @@ Item {
     objectName: "overlayPartyPanel"
     property var socialView: null
     property var voiceView: null
+    property var discordView: null
     property var audioRoutes: null
     property bool hasActiveFocus: false
     property int selectedIndex: -1
@@ -83,6 +84,7 @@ Item {
             Layout.fillWidth: true
             Text { text: "Party"; color: Theme.text; font.bold: true; font.pixelSize: 14; textFormat: Text.PlainText; Layout.fillWidth: true }
             Text { text: panel.voiceConnected ? "LIVE" : "OFF"; color: panel.voiceConnected ? Theme.text : Theme.muted; font.pixelSize: 10; textFormat: Text.PlainText }
+            OverlayControl { objectName: "overlayOpenDiscord"; width: 58; implicitWidth: 58; text: "Discord"; compact: true; enabled: !!(panel.discordView && panel.discordView.hasClient); onClicked: if (panel.discordView) panel.discordView.openDiscord() }
             OverlayControl { objectName: "overlayPartyCreate"; width: 44; implicitWidth: 44; text: panel.socialView && panel.socialView.partyState && panel.socialView.partyState.partyId ? "Join" : "New"; compact: true; visible: !panel.voiceView || !panel.voiceView.sessionActive; highlighted: panel.hasActiveFocus && panel.selectedIndex < 0 && panel.selectedControl === 0; enabled: !!(panel.socialView && panel.socialView.connected && panel.voiceView && panel.voiceView.available); onClicked: panel.createOrJoin() }
             OverlayControl { objectName: "overlayPartyLeave"; width: 44; implicitWidth: 44; text: "Exit"; hint: "Leave party"; compact: true; visible: !!(panel.voiceView && panel.voiceView.sessionActive) || !!(panel.socialView && panel.socialView.partyState && panel.socialView.partyState.partyId); enabled: visible; highlighted: panel.hasActiveFocus && panel.selectedIndex < 0 && panel.selectedControl === 0 && !!(panel.voiceView && panel.voiceView.sessionActive); onClicked: panel.leaveParty() }
         }

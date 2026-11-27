@@ -9,6 +9,7 @@ import unittest
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 from PySide6.QtCore import QObject, QMetaObject, Qt, QCoreApplication, QUrl
+from PySide6.QtCore import Property, Slot
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQuick import QQuickWindow
 from PySide6.QtQml import QQmlApplicationEngine, QQmlComponent
@@ -42,6 +43,18 @@ class SocialDashboardTests(unittest.TestCase):
 
         engine = QQmlApplicationEngine()
         engine.rootContext().setContextProperty("xodusSocialView", view)
+        class FakeDiscord(QObject):
+            def __init__(self):
+                super().__init__()
+                self.calls = 0
+            @Property(bool)
+            def hasClient(self): return True
+            @Slot(result=bool)
+            def openDiscord(self):
+                self.calls += 1
+                return True
+        discord = FakeDiscord()
+        engine.rootContext().setContextProperty("discordService", discord)
         engine.addImportPath(str(APP_ROOT))
 
         window = QQuickWindow()
@@ -73,6 +86,11 @@ Item {
         status_text = dialog.findChild(QObject, "connectionStatusText")
         self.assertIsNotNone(status_text)
         self.assertEqual(status_text.property("text"), "Disconnected")
+        open_discord = dialog.findChild(QObject, "openDiscordButton")
+        self.assertIsNotNone(open_discord)
+        self.assertTrue(open_discord.property("enabled"))
+        QMetaObject.invokeMethod(open_discord, "clicked")
+        self.assertEqual(discord.calls, 1)
 
         voice_text = dialog.findChild(QObject, "voiceStatusText")
         self.assertIsNotNone(voice_text)

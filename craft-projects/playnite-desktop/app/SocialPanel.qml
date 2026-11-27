@@ -6,6 +6,7 @@ Item {
     id: panel
     objectName: "socialPanel"
     property var socialView: typeof xodusSocialView !== "undefined" ? xodusSocialView : null
+    property var discordView: typeof discordService !== "undefined" ? discordService : null
     property var voiceView: typeof xboxVoiceMedia !== "undefined" ? xboxVoiceMedia : null
     property var audioRoutes: typeof voiceAudioRoutes !== "undefined" ? voiceAudioRoutes : null
     property var steamView: typeof steamFriends !== "undefined" ? steamFriends : null
@@ -78,6 +79,11 @@ Item {
                 objectName: "refreshButton"; text: "Refresh"
                 enabled: panel.socialView && panel.socialView.connected && !panel.socialView.refreshing
                 onClicked: { panel.socialView.refreshFriends(); panel.socialView.refreshParty() }
+            }
+            SocialButton {
+                objectName: "openDiscordButton"; text: "Open Discord"
+                enabled: panel.discordView && panel.discordView.hasClient
+                onClicked: if (panel.discordView) panel.discordView.openDiscord()
             }
         }
         Text {

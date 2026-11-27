@@ -17,6 +17,7 @@ QtObject {
     readonly property bool active: editing && surface.visible
     property var socialView: null
     property var voiceView: null
+    property var discordView: typeof discordService !== "undefined" ? discordService : null
     property var audioRoutes: typeof voiceAudioRoutes !== "undefined" ? voiceAudioRoutes : null
     property var currentGame: null
     property var toolsBridge: typeof overlayTools !== "undefined" ? overlayTools : null
@@ -399,6 +400,7 @@ QtObject {
             hasActiveFocus: manager.editing && manager.navigationWidget === 1 && !manager.layoutMode
             socialView: manager.socialView
             voiceView: manager.voiceView
+            discordView: manager.discordView
             audioRoutes: manager.audioRoutes
         }
     }
