@@ -12,9 +12,11 @@ import os
 from pathlib import Path, PureWindowsPath
 import re
 import signal
+import stat
 import time
 import xml.etree.ElementTree as ET
 from native_services import file_locking as fcntl
+from .platform import is_windows, process_launch_options
 
 from .provider_jobs import ProviderJobProgress
 from .installation_library import inspect_destination
@@ -167,8 +169,33 @@ def verify_installation(plan):
             'state':'files_verified','playability':'Requires the configured Xodus runtime; not tested by installation.'}
 
 
-async def _stop(child):
+async def _stop(child, *, windows: bool | None = None):
     if child.returncode is not None:return
+    windows = is_windows() if windows is None else bool(windows)
+    if windows:
+        # asyncio's Windows child transport owns this exact process handle. Job
+        # control is not required to stop an unrelated launcher: terminate only
+        # the process this runner created, then escalate if it does not exit.
+        try:
+            child.terminate()
+        except (ProcessLookupError, OSError):
+            pass
+        try:
+            await asyncio.wait_for(asyncio.shield(child.wait()), 4)
+            return
+        except asyncio.TimeoutError:
+            pass
+        try:
+            child.kill()
+        except (ProcessLookupError, OSError):
+            pass
+        try:
+            await asyncio.wait_for(asyncio.shield(child.wait()), 2)
+        except asyncio.TimeoutError:
+            # Do not turn cancellation into an unbounded wait on a broken OS
+            # transport; the outer test/job watchdog remains a last resort.
+            pass
+        return
     for sig,timeout in ((signal.SIGINT,4),(signal.SIGTERM,2),(signal.SIGKILL,2)):
         try:os.killpg(child.pid,sig)
         except ProcessLookupError:break
@@ -180,7 +207,7 @@ async def _stop(child):
 async def _process(argv, *, on_line=None, output_limit=256000, timeout=40):
     """Bounded child output, owned process group, no raw tool output in exceptions."""
     child=await asyncio.create_subprocess_exec(*argv,stdin=asyncio.subprocess.DEVNULL,
-        stdout=asyncio.subprocess.PIPE,stderr=asyncio.subprocess.PIPE,start_new_session=True)
+        stdout=asyncio.subprocess.PIPE,stderr=asyncio.subprocess.PIPE,**process_launch_options())
     output=bytearray()
     async def read(stream,stdout):
         buffer=b'';count=0
@@ -372,9 +399,18 @@ class XodusInstaller:
             elif any(plan.destination.iterdir()):
                 raise XodusInstallError('Destination is not empty and has no matching Waystone install record. Files were not changed.')
             else:
-                fd=os.open(marker,os.O_CREAT|os.O_EXCL|os.O_WRONLY|os.O_NOFOLLOW,0o600)
+                fd=os.open(marker,os.O_CREAT|os.O_EXCL|os.O_WRONLY|getattr(os,'O_NOFOLLOW',0),0o600)
                 with os.fdopen(fd,'w') as stream:json.dump(identity,stream);stream.flush();os.fsync(stream.fileno())
-            lock=os.open(plan.destination/'.waystone-xodus.lock',os.O_CREAT|os.O_RDWR|os.O_NOFOLLOW,0o600)
+            lock_path=plan.destination/'.waystone-xodus.lock'
+            if lock_path.is_symlink() or getattr(lock_path,'is_junction',lambda:False)():
+                raise XodusInstallError('Xbox installation lock is not a regular app-owned file.')
+            lock=os.open(lock_path,os.O_CREAT|os.O_RDWR|getattr(os,'O_NOFOLLOW',0),0o600)
+            if lock_path.is_symlink() or getattr(lock_path,'is_junction',lambda:False)():
+                os.close(lock)
+                raise XodusInstallError('Xbox installation lock is not a regular app-owned file.')
+            if not stat.S_ISREG(os.fstat(lock).st_mode):
+                os.close(lock)
+                raise XodusInstallError('Xbox installation lock is not a regular app-owned file.')
             try:
                 try:fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
                 except BlockingIOError:raise XodusInstallError('This destination already has an active installation.') from None
@@ -383,8 +419,16 @@ class XodusInstaller:
                     raise XodusInstallError('Xodus did not confirm completion. Partial files were kept for resume.')
                 receipt=verify_installation(plan)
                 receipt_path=plan.destination/'.waystone-install-receipt.json'
-                fd=os.open(receipt_path,os.O_WRONLY|os.O_CREAT|os.O_TRUNC|os.O_NOFOLLOW,0o600)
-                with os.fdopen(fd,'w') as stream:json.dump(receipt,stream);stream.flush();os.fsync(stream.fileno())
+                # Create a new sibling, then replace. Replacing a symlink path
+                # replaces the link itself instead of truncating its target.
+                temp_receipt=plan.destination/('.waystone-install-receipt-'+os.urandom(8).hex()+'.tmp')
+                fd=os.open(temp_receipt,os.O_WRONLY|os.O_CREAT|os.O_EXCL|getattr(os,'O_NOFOLLOW',0),0o600)
+                try:
+                    with os.fdopen(fd,'w') as stream:json.dump(receipt,stream);stream.flush();os.fsync(stream.fileno())
+                    os.replace(temp_receipt,receipt_path)
+                finally:
+                    try:temp_receipt.unlink()
+                    except FileNotFoundError:pass
                 return receipt
             finally:os.close(lock)
         finally:self._active=None

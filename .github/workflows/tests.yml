@@ -53,7 +53,7 @@ jobs:
         env:
           PYTHONPATH: ".;craft-projects/playnite-desktop;craft-projects/playnite-desktop/app"
           QT_QPA_PLATFORM: offscreen
-        run: uv run --with-requirements requirements-test.txt python -m pytest -q -p no:cacheprovider --timeout=60 --durations=30 -m "not linux_only" tests craft-projects/playnite-desktop/app
+        run: uv run --with-requirements requirements-test.txt python tools/run_windows_pytest.py --timeout 60 --hard-timeout 600 --isolate-file tests/test_xodus_install.py tests craft-projects/playnite-desktop/app
       - name: Import application modules on Windows
         env:
           PYTHONPATH: ".;craft-projects/playnite-desktop;craft-projects/playnite-desktop/app"

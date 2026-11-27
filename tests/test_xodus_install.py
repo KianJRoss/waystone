@@ -69,6 +69,7 @@ def test_resolve_and_plan_do_not_download_or_make_directories(tmp_path):
         '--market','US','--selected-content-id',CONTENT,'--progress-json')
 
 
+@pytest.mark.windows_api_probe
 def test_completed_stream_requires_files_and_writes_detached_receipt(tmp_path):
     calls=[];progress=[]
     async def process(argv,**kw):
@@ -135,15 +136,24 @@ def test_expired_plan_and_drive_change_do_not_start_process(tmp_path):
     assert not calls
 
 
+@pytest.mark.windows_api_probe
 def test_cancel_releases_the_owned_attempt_without_deleting_partial_data(tmp_path):
     async def scenario():
         active=asyncio.Event()
         async def process(argv,**kw):
             (Path(argv[3])/'partial').write_bytes(b'kept');active.set();await asyncio.sleep(999)
         service=installer(process);target=plan(service,tmp_path)
-        task=asyncio.create_task(service.execute(target,lambda p:None));await active.wait()
-        await service.cancel();assert task.cancelled() and service._active is None
-        assert (target.destination/'partial').read_bytes()==b'kept'
+        task=asyncio.create_task(service.execute(target,lambda p:None))
+        try:
+            # If setup fails before the fake backend starts, fail with a useful
+            # assertion instead of hanging until the outer CI watchdog kills pytest.
+            await asyncio.wait_for(active.wait(),2)
+            await service.cancel()
+            assert task.cancelled() and service._active is None
+            assert (target.destination/'partial').read_bytes()==b'kept'
+        finally:
+            if not task.done():task.cancel()
+            await asyncio.gather(task,return_exceptions=True)
     asyncio.run(scenario())
 
 
@@ -224,6 +234,23 @@ def test_other_xodus_work_and_destination_symlinks_are_not_overwritten(tmp_path)
 
 def test_real_owned_runner_cancellation_reaps_its_child(tmp_path):
     import os
+    import ctypes
+    from ctypes import wintypes
+    def pid_is_alive(pid):
+        if os.name != 'nt':
+            try:os.kill(pid,0);return True
+            except ProcessLookupError:return False
+            except PermissionError:return True
+        kernel=ctypes.WinDLL('kernel32',use_last_error=True)
+        kernel.OpenProcess.argtypes=[wintypes.DWORD,wintypes.BOOL,wintypes.DWORD]
+        kernel.OpenProcess.restype=wintypes.HANDLE
+        handle=kernel.OpenProcess(0x1000,False,pid)
+        if not handle:return False
+        try:
+            code=wintypes.DWORD()
+            if not kernel.GetExitCodeProcess(handle,ctypes.byref(code)):return True
+            return code.value==259 # STILL_ACTIVE
+        finally:kernel.CloseHandle(handle)
     async def scenario():
         pidfile=tmp_path/'child-pid'
         code='import os,sys,time,signal;signal.signal(signal.SIGINT,signal.SIG_IGN);open(sys.argv[1],"w").write(str(os.getpid()));time.sleep(999)'
@@ -234,5 +261,22 @@ def test_real_owned_runner_cancellation_reaps_its_child(tmp_path):
         assert pidfile.exists();pid=int(pidfile.read_text())
         task.cancel()
         with pytest.raises(asyncio.CancelledError):await task
-        with pytest.raises(ProcessLookupError):os.kill(pid,0)
+        assert not pid_is_alive(pid), 'the exact child owned by _process must be reaped'
     asyncio.run(scenario())
+
+
+def test_windows_child_cleanup_uses_exact_process_terminate_then_kill():
+    from native_services.xodus_install import _stop
+    class Child:
+        returncode=None
+        def __init__(self):self.calls=[]
+        def terminate(self):self.calls.append('terminate')
+        def kill(self):self.calls.append('kill')
+        async def wait(self):
+            self.calls.append('wait')
+            if self.calls.count('wait')==1:raise asyncio.TimeoutError()
+            self.returncode=1
+            return 1
+    child=Child()
+    asyncio.run(_stop(child,windows=True))
+    assert child.calls==['terminate','wait','kill','wait']

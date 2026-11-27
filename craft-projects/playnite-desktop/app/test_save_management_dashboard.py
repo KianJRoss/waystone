@@ -157,12 +157,18 @@ Item {
 
             # 4. Preview Backup (Async)
             preview_backup_btn = dialog.findChild(QObject, 'previewBackupButton')
+            preview_completed = QSignalSpy(view.operationCompleted)
             QMetaObject.invokeMethod(preview_backup_btn, 'clicked')
-            for _ in range(50):
-                if view.lastJobResult.get('preview'):
+            def preview_finished():
+                return any(preview_completed.at(i)[0] == 'backup_preview'
+                           for i in range(preview_completed.count()))
+            for _ in range(250):
+                if preview_finished():
                     break
                 QTest.qWait(20)
 
+            self.assertTrue(preview_finished(),
+                            f"Backup preview did not complete; busy={view.isJobRunning}, result={view.lastJobResult!r}")
             self.assertTrue(view.lastJobResult.get('success'))
             self.assertTrue(view.lastJobResult.get('preview'))
 
