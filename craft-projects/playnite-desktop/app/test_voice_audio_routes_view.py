@@ -3,6 +3,7 @@ os.environ.setdefault('QT_QPA_PLATFORM','offscreen')
 from PySide6.QtCore import QObject,Signal
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtTest import QTest
+import pytest
 from voice_audio_routes_view import VoiceAudioRoutesView,owned_voice_pids
 
 class Voice(QObject):
@@ -36,6 +37,8 @@ def test_constructor_silent_explicit_device_choice_and_new_voice_stream_route():
         count=len(router.calls);view.selectInput('not-known');assert len(router.calls)==count
         voice.connected=False;voice.changed.emit();assert not view._timer.isActive()
     finally:view.shutdown()
+# This test asserts Linux procfs + Unix UID ownership semantics.
+@pytest.mark.linux_only
 def test_pid_discovery_excludes_games_and_unrelated_processes(tmp_path):
     def proc(pid,children,exe):
         root=tmp_path/str(pid);(root/'task'/str(pid)).mkdir(parents=True)

@@ -1,6 +1,7 @@
 import json
 import sqlite3
 from pathlib import Path
+import pytest
 
 from native_services.launcher_library import collect_launcher_library, default_library_path, sync_library
 from native_services.library_repository import LibraryRepository
@@ -357,6 +358,8 @@ def test_optional_steam_account_adds_owned_uninstalled_games_and_never_revokes_o
     assert owned['variants'][0]['status'] == 'not-owned'
 
 
+# XDG environment variables are a Linux contract; Windows roots use AppData.
+@pytest.mark.linux_only
 def test_xdg_data_and_config_paths_are_respected(tmp_path):
     home = tmp_path / 'home'; home.mkdir()
     data = tmp_path / 'data'; config = tmp_path / 'config'

@@ -378,14 +378,39 @@ def test_cancellation_cleanup_own_synthetic_child(tmp_path):
         task.cancel()
         with pytest.raises(asyncio.CancelledError):
             await task
-        await asyncio.sleep(0.2)
+        async def process_alive():
+            if os.name != 'nt':
+                try:
+                    os.kill(pid, 0)
+                    return True
+                except ProcessLookupError:
+                    return False
+                except PermissionError:
+                    return True
+            # Windows does not accept signal 0. Query the process exit code
+            # through the native handle API instead of assuming POSIX signals.
+            import ctypes
+            from ctypes import wintypes
+            kernel = ctypes.WinDLL('kernel32', use_last_error=True)
+            kernel.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+            kernel.OpenProcess.restype = wintypes.HANDLE
+            handle = kernel.OpenProcess(0x1000, False, pid)  # QUERY_LIMITED_INFORMATION
+            if not handle:
+                return False
+            try:
+                exit_code = wintypes.DWORD()
+                kernel.GetExitCodeProcess.argtypes = [wintypes.HANDLE, ctypes.POINTER(wintypes.DWORD)]
+                if not kernel.GetExitCodeProcess(handle, ctypes.byref(exit_code)):
+                    return True
+                return exit_code.value == 259  # STILL_ACTIVE
+            finally:
+                kernel.CloseHandle(handle)
         alive = True
-        try:
-            os.kill(pid, 0)
-        except ProcessLookupError:
-            alive = False
-        except PermissionError:
-            alive = True
+        for _ in range(20):
+            alive = await process_alive()
+            if not alive:
+                break
+            await asyncio.sleep(0.05)
         assert not alive, "synthetic child should be terminated on cancellation"
 
     asyncio.run(run_case())

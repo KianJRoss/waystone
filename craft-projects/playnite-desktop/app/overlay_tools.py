@@ -625,8 +625,13 @@ class OverlayToolsBridge(QObject):
 
         # Automatic detection of MangoHud / gamescope stats files
         self._performance_available = False
+        uid_reader = getattr(os, 'getuid', None)
+        if uid_reader is None:
+            # Gamescope/MangoHud runtime files below are Linux-specific.
+            self.performanceChanged.emit()
+            return
         candidates = []
-        uid = os.getuid()
+        uid = uid_reader()
         candidates.append(Path(f"/run/user/{uid}/gamescope-stats"))
         candidates.append(Path("/tmp/gamescope-stats"))
         candidates.append(Path(f"/run/user/{uid}/mangohud.json"))

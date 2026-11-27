@@ -1,6 +1,7 @@
 """Qt view/controller for Settings > Streaming (Sunshine / Apollo host integration, W11a)."""
 from __future__ import annotations
 
+from native_services.platform import set_private_file_mode
 import json
 import os
 from pathlib import Path
@@ -156,7 +157,7 @@ class SunshineSettingsView(QObject):
             payload = (json.dumps(doc, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
             fd, tmp_name = tempfile.mkstemp(prefix=".waystone-settings-", dir=self._settings_path.parent)
             try:
-                os.fchmod(fd, 0o600)
+                set_private_file_mode(fd, 0o600)
                 with os.fdopen(fd, "wb", closefd=True) as stream:
                     stream.write(payload)
                     stream.flush()

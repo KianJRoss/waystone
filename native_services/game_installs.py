@@ -119,9 +119,17 @@ def _read_json(path):
 def _read_bytes_bounded(path, *, max_bytes=10 * 1024 * 1024):
     """Read one bounded regular file without following a final symlink."""
     import stat
+    path = Path(path)
     descriptor = None
     try:
+        # O_NOFOLLOW is unavailable/ineffective on Windows. Reject a reparse
+        # link at the path boundary before open and re-check after descriptor
+        # acquisition; POSIX still gets the atomic O_NOFOLLOW guarantee too.
+        if path.is_symlink() or getattr(path, 'is_junction', lambda: False)():
+            return None
         descriptor = os.open(path, os.O_RDONLY | getattr(os, 'O_NOFOLLOW', 0) | getattr(os, 'O_CLOEXEC', 0))
+        if path.is_symlink() or getattr(path, 'is_junction', lambda: False)():
+            return None
         info = os.fstat(descriptor)
         if not stat.S_ISREG(info.st_mode) or info.st_size > max_bytes:
             return None

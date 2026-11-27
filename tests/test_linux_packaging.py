@@ -6,6 +6,11 @@ from pathlib import Path
 import subprocess
 import unittest
 import yaml
+import pytest
+
+# AppImage/.deb/.rpm builders invoke Linux shell/package tooling and cannot run
+# on windows-latest. Their packaging validation remains in Linux CI.
+pytestmark = pytest.mark.linux_only
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 

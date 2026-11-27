@@ -46,6 +46,8 @@ def test_windows_direct_plan_and_app_private_state(tmp_path):
     assert intent.env['GOGDL_CONFIG_PATH']==str((Path(plan.auth_config_path).parent/'gogdl-config').resolve())
     assert plan.info_path.endswith('goggame-12345.info')
 
+# These cases assert the Linux GOG launch planner/runtime contract.
+@pytest.mark.linux_only
 def test_osx_metadata_path_matches_upstream_but_linux_planner_refuses_execution(tmp_path):
     from native_services.gog_direct_launch import _info_path_for
     install=_install(tmp_path,'osx')
@@ -53,6 +55,7 @@ def test_osx_metadata_path_matches_upstream_but_linux_planner_refuses_execution(
     with pytest.raises(GogDirectLaunchError,match='macOS'):
         plan_gog_direct_launch(_config(tmp_path),'12345',install,platform='osx',gogdl_path=_tool(tmp_path))
 
+@pytest.mark.linux_only
 def test_linux_requires_matching_local_metadata_and_start(tmp_path):
     plan=_plan(tmp_path,'linux')
     assert plan.info_path.endswith('game/goggame-12345.info')

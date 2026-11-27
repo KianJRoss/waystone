@@ -17,6 +17,7 @@ import sys
 import tempfile
 from typing import Callable, Iterable
 from urllib.parse import parse_qs, urlsplit
+from .platform import set_private_file_mode
 
 HIDDEN_WORKSPACE = "special:waystone-hidden"
 
@@ -300,7 +301,7 @@ def atomic_status_write(path: str | Path, payload: dict) -> None:
     fd, tmp_name = tempfile.mkstemp(prefix=f".{target.name}.", suffix=".tmp", dir=target.parent)
     tmp = Path(tmp_name)
     try:
-        os.fchmod(fd, 0o600)
+        set_private_file_mode(fd, 0o600, path=tmp_name)
         with os.fdopen(fd, "w", encoding="utf-8") as stream:
             stream.write(data)
             stream.flush()
@@ -321,7 +322,8 @@ class Hyprland:
         env = os.environ if environ is None else environ
         self.enabled = (bool(which("hyprctl")) and bool(env.get("HYPRLAND_INSTANCE_SIGNATURE"))) if enabled is None else enabled
         self._run = run or subprocess.run
-        self._event_socket = (Path(env.get("XDG_RUNTIME_DIR") or f"/run/user/{os.getuid()}") / "hypr"
+        uid = getattr(os, "getuid", lambda: 0)()
+        self._event_socket = (Path(env.get("XDG_RUNTIME_DIR") or f"/run/user/{uid}") / "hypr"
                               / str(env.get("HYPRLAND_INSTANCE_SIGNATURE") or "") / ".socket2.sock")
 
     def watch_new_windows(self, callback: Callable[[str, str, str], None]) -> Callable[[], None] | None:
@@ -335,7 +337,7 @@ class Hyprland:
         try:
             sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
             sock.connect(str(self._event_socket))
-        except OSError:
+        except (OSError, AttributeError):
             return None
         stopped = threading.Event()
 

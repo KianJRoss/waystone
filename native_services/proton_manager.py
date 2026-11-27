@@ -15,6 +15,7 @@ Every network and filesystem boundary is injectable for tests.
 from __future__ import annotations
 
 import hashlib
+from itertools import chain
 import json
 import os
 from pathlib import Path
@@ -494,7 +495,15 @@ def set_steam_mapping_text(text: str, appid: str, tool: str | None) -> str:
 
 def _procs() -> Iterable[tuple[str, str, str]]:
     """(comm, command line, executable path) for every process we can see."""
-    for d in Path("/proc").iterdir():
+    proc = Path("/proc")
+    # This adapter is specifically for Linux procfs. Other platforms have no
+    # /proc tree; an unavailable snapshot is empty rather than an install crash.
+    try:
+        processes = proc.iterdir()
+        first = next(processes, None)
+    except OSError:
+        return
+    for d in (chain(()) if first is None else chain((first,), processes)):
         if not d.name.isdigit():
             continue
         try:

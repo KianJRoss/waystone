@@ -72,10 +72,10 @@ def _path(value):
 
 def _directory(path):
     """Walk every component without following symlinks (not Path.resolve)."""
-    fd = os.open('/', _FLAGS | os.O_DIRECTORY)
+    fd = os.open('/', _FLAGS | getattr(os, "O_DIRECTORY", 0))
     try:
         for part in path.parts[1:]:
-            child = os.open(part, _FLAGS | os.O_DIRECTORY, dir_fd=fd)
+            child = os.open(part, _FLAGS | getattr(os, "O_DIRECTORY", 0), dir_fd=fd)
             os.close(fd)
             fd = child
         return fd
@@ -216,7 +216,7 @@ class ArtworkOverrideStore:
         fd = None
         try:
             os.mkdir(path.name, 0o700, dir_fd=parent)
-            fd = os.open(path.name, _FLAGS | os.O_DIRECTORY, dir_fd=parent)
+            fd = os.open(path.name, _FLAGS | getattr(os, "O_DIRECTORY", 0), dir_fd=parent)
             lock = os.open('lock', os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
                            0o600, dir_fd=fd)
             os.fsync(lock)

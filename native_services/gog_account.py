@@ -2,6 +2,7 @@
 Tokens stay inside gogdl's private auth file or transient process memory.
 """
 from __future__ import annotations
+from .platform import set_private_file_mode
 import asyncio, json, os, re, secrets, stat, tempfile
 from pathlib import Path
 from urllib.parse import urlencode, urlsplit, parse_qs, quote
@@ -169,7 +170,7 @@ class GOGAccountService:
         tmp_name = None
         try:
             fd, tmp_name = tempfile.mkstemp(prefix=".library-", suffix=".tmp", dir=self.config_root)
-            os.fchmod(fd, 0o600)
+            set_private_file_mode(fd, 0o600)
             payload = json.dumps(games, ensure_ascii=False).encode("utf-8")
             with os.fdopen(fd, "wb") as stream:
                 stream.write(payload); stream.flush(); os.fsync(stream.fileno())

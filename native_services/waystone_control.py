@@ -6,6 +6,7 @@ thread so app state and launch actions stay serialized with the visible UI.
 """
 from __future__ import annotations
 
+from .platform import set_private_file_mode
 import json
 import os
 from pathlib import Path
@@ -53,12 +54,12 @@ class AppJournal:
             pass
         flags = os.O_WRONLY | os.O_CREAT | os.O_APPEND
         if hasattr(os, "O_CLOEXEC"):
-            flags |= os.O_CLOEXEC
+            flags |= getattr(os, "O_CLOEXEC", 0)
         if hasattr(os, "O_NOFOLLOW"):
             flags |= os.O_NOFOLLOW
         fd = os.open(self.path, flags, 0o600)
         try:
-            os.fchmod(fd, 0o600)
+            set_private_file_mode(fd, 0o600)
             view = memoryview(payload)
             while view:
                 written = os.write(fd, view)
@@ -121,12 +122,12 @@ class WaystoneControlServer(QObject):
         lock_path = self._path.with_suffix(self._path.suffix + ".lock")
         flags = os.O_RDWR | os.O_CREAT
         if hasattr(os, "O_CLOEXEC"):
-            flags |= os.O_CLOEXEC
+            flags |= getattr(os, "O_CLOEXEC", 0)
         if hasattr(os, "O_NOFOLLOW"):
             flags |= os.O_NOFOLLOW
         try:
             self._lock_fd = os.open(lock_path, flags, 0o600)
-            os.fchmod(self._lock_fd, 0o600)
+            set_private_file_mode(self._lock_fd, 0o600)
             fcntl.flock(self._lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
             self._remove_stale_socket_only()
             if not self._server.listen(str(self._path)):

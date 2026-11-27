@@ -9,6 +9,9 @@ def owned_voice_pids(proc=Path('/proc'), root=None):
     """Only this UI and its QtWebEngine descendants, never a launched game's PID."""
     root = os.getpid() if root is None else root
     found = {root}; pending = [root]; visited = set()
+    getuid = getattr(os, 'getuid', None)
+    if getuid is None:
+        return found
     while pending and len(visited) < 512:
         pid = pending.pop()
         if pid in visited: continue
@@ -23,7 +26,7 @@ def owned_voice_pids(proc=Path('/proc'), root=None):
                 executable = (proc / raw / 'exe').resolve(strict=True)
                 uid = (proc / raw).stat().st_uid
             except OSError: continue
-            if uid == os.getuid() and executable.name == 'QtWebEngineProcess':
+            if uid == getuid() and executable.name == 'QtWebEngineProcess':
                 found.add(child); pending.append(child)
     return found
 

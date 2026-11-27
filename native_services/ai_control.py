@@ -85,7 +85,7 @@ class AIControlService:
     @classmethod
     def from_json_file(cls, path: str | os.PathLike[str]) -> AIControlService:
         """Only an explicit regular file, no symlinks or supplied catalog roots."""
-        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_CLOEXEC)
+        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | getattr(os, "O_CLOEXEC", 0))
         try:
             before = os.fstat(fd)
             if not stat.S_ISREG(before.st_mode) or before.st_size > MAX_INPUT_BYTES:

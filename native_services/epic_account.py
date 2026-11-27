@@ -7,6 +7,7 @@ import time
 from pathlib import Path
 from typing import Any, Awaitable, Callable, Optional
 from native_services import provider_engines
+from native_services.platform import private_child_process_options
 
 LOGIN_URL = "https://legendary.gl/epiclogin"
 _SAFE_ERROR = "Epic account operation failed."
@@ -49,7 +50,7 @@ async def default_runner(argv, *, input: Optional[str] = None, env: dict, timeou
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
         env=env,
-        umask=0o077,
+        **private_child_process_options(),
     )
     try:
         if input is not None:

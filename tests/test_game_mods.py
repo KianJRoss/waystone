@@ -58,6 +58,8 @@ def test_overwriting_a_different_existing_file_is_a_conflict(tmp_path):
     assert plan["conflicts"] == [str(game / "Data/x.esp")]
 
 
+# bsdtar conversion is the Linux packaging/toolchain path.
+@pytest.mark.linux_only
 def test_7z_is_converted_with_bsdtar(tmp_path):
     src = tmp_path / "src"; (src / "textures").mkdir(parents=True); (src / "textures/a.dds").write_text("t")
     archive = tmp_path / "m.7z"

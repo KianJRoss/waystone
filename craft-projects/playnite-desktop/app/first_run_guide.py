@@ -1,4 +1,5 @@
 """Small, reopenable first-run completion marker and explicit udev rule installer for the app-owned library."""
+from native_services.platform import set_private_file_mode
 import json
 import os
 from pathlib import Path
@@ -174,7 +175,7 @@ class FirstRunGuide(QObject):
             self.path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
             fd, temporary = tempfile.mkstemp(prefix='.first-run-', dir=self.path.parent)
             try:
-                os.fchmod(fd, 0o600)
+                set_private_file_mode(fd, 0o600)
                 with os.fdopen(fd, 'w', encoding='utf-8') as stream:
                     json.dump({'version': 1, 'complete': True}, stream, separators=(',', ':'))
                     stream.flush(); os.fsync(stream.fileno())

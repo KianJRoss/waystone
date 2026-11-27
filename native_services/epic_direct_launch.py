@@ -13,6 +13,7 @@ import stat
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping
+from native_services.platform import is_windows, is_executable_file
 
 try:
     from native_services.launch_profiles import LaunchIntent
@@ -281,7 +282,7 @@ def _validate_existing_executable(path: Path, label: str) -> str:
         raise EpicDirectLaunchError(f"{label} must not be a symlink")
     if not stat.S_ISREG(st.st_mode):
         raise EpicDirectLaunchError(f"{label} must be a regular file")
-    if not os.access(path, os.X_OK):
+    if not is_executable_file(path):
         raise EpicDirectLaunchError(f"{label} is not executable")
     return str(path)
 
@@ -297,7 +298,8 @@ def _validate_existing_dir(path: Path, label: str) -> str:
         raise EpicDirectLaunchError(f"{label} must not be a symlink")
     if not stat.S_ISDIR(st.st_mode):
         raise EpicDirectLaunchError(f"{label} must be a directory")
-    if not os.access(path, os.X_OK | os.R_OK):
+    required_access = os.R_OK if is_windows() else os.X_OK | os.R_OK
+    if not os.access(path, required_access):
         raise EpicDirectLaunchError(f"{label} is not accessible")
     return str(path)
 

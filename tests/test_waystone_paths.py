@@ -1,6 +1,11 @@
 from pathlib import Path
+import pytest
 
 from native_services import waystone_paths as wp
+
+# This file asserts Linux XDG conventions; Windows AppData roots are exercised
+# separately by tests/test_platform.py.
+pytestmark = pytest.mark.linux_only
 
 
 def test_new_install_uses_waystone_dir_and_xdg(tmp_path, monkeypatch):

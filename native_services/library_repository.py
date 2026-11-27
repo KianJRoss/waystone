@@ -3,6 +3,8 @@
 Imported BSON is immutable provenance; native metadata is independently editable.
 Only the segregated one-off migration tool requires LiteDB/.NET.
 """
+from .platform import set_private_file_mode
+from .platform import fsync_directory
 from pathlib import Path
 import base64
 import collections
@@ -93,7 +95,7 @@ class LibraryRepository:
         path = Path(path)
         path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
         fd, temporary = tempfile.mkstemp(prefix='.waystone-library-', suffix='.sqlite3', dir=path.parent)
-        os.fchmod(fd, 0o600); os.close(fd)
+        set_private_file_mode(fd, 0o600); os.close(fd)
         db = sqlite3.connect(temporary)
         try:
             db.executescript('''PRAGMA application_id=1263292977;
@@ -125,9 +127,7 @@ class LibraryRepository:
                 os.fsync(stream.fileno())
             os.link(temporary, path)  # atomic no-overwrite publication
             Path(temporary).unlink()
-            directory = os.open(path.parent, os.O_RDONLY | getattr(os, 'O_DIRECTORY', 0))
-            try: os.fsync(directory)
-            finally: os.close(directory)
+            fsync_directory(path.parent)
         except BaseException:
             Path(temporary).unlink(missing_ok=True)
             raise

@@ -35,6 +35,9 @@ jobs:
   windows-platform:
     name: Windows app and platform suite
     runs-on: windows-latest
+    # The previous run spent 4h38m in pytest before cancellation. Bound the whole
+    # job and each individual test so a hung child/process poll cannot pin a runner.
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -45,12 +48,12 @@ jobs:
         env:
           PYTHONPATH: ".;craft-projects/playnite-desktop;craft-projects/playnite-desktop/app"
           QT_QPA_PLATFORM: offscreen
-        run: uv run --with-requirements requirements-test.txt python -m pytest -q -p no:cacheprovider tests/test_platform.py
+        run: uv run --with-requirements requirements-test.txt python -m pytest -q -p no:cacheprovider --timeout=60 --durations=30 tests/test_platform.py
       - name: Cross-platform suite (explicit Linux-only transport tests excluded)
         env:
           PYTHONPATH: ".;craft-projects/playnite-desktop;craft-projects/playnite-desktop/app"
           QT_QPA_PLATFORM: offscreen
-        run: uv run --with-requirements requirements-test.txt python -m pytest -q -p no:cacheprovider -m "not linux_only" tests craft-projects/playnite-desktop/app
+        run: uv run --with-requirements requirements-test.txt python -m pytest -q -p no:cacheprovider --timeout=60 --durations=30 -m "not linux_only" tests craft-projects/playnite-desktop/app
       - name: Import application modules on Windows
         env:
           PYTHONPATH: ".;craft-projects/playnite-desktop;craft-projects/playnite-desktop/app"

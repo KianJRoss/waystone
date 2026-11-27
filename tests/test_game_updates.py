@@ -459,7 +459,7 @@ class TestGameUpdatesBackend(unittest.IsolatedAsyncioTestCase):
                 return 0
 
             manager = ProviderJobManager(
-                tool_configs={"epic": ProviderToolConfig(binary_path=Path("/usr/bin/legendary"))},
+                tool_configs={"epic": ProviderToolConfig(binary_path=root / "tools" / "legendary")},
                 process_runner=fake_runner,
             )
 

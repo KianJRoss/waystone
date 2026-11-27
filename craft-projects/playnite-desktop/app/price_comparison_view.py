@@ -1,5 +1,6 @@
 """Async, keyring-backed personal ITAD lookup for Waystone game details."""
 from __future__ import annotations
+from native_services.platform import set_private_file_mode
 import json
 import os
 from pathlib import Path
@@ -181,7 +182,7 @@ class PriceComparisonView(QObject):
         try:
             path.parent.mkdir(parents=True,exist_ok=True,mode=0o700)
             fd,temp=tempfile.mkstemp(prefix='.store-market-',dir=path.parent)
-            os.fchmod(fd,0o600)
+            set_private_file_mode(fd, 0o600)
             with os.fdopen(fd,'w',encoding='utf-8') as stream:
                 json.dump({'country':country,'include_vouchers':vouchers},stream,separators=(',',':'));stream.flush();os.fsync(stream.fileno())
             os.replace(temp,path);temp=None
@@ -806,7 +807,7 @@ class PriceComparisonView(QObject):
             path.parent.mkdir(parents=True,exist_ok=True,mode=0o700)
             fd,temp=tempfile.mkstemp(prefix='.store-scraper-',dir=path.parent)
             try:
-                os.fchmod(fd,0o600)
+                set_private_file_mode(fd, 0o600)
                 with os.fdopen(fd,'w',encoding='utf-8') as stream:
                     json.dump({'hosts':hosts},stream,separators=(',',':'));stream.flush();os.fsync(stream.fileno())
                 os.replace(temp,path)
@@ -829,7 +830,7 @@ class PriceComparisonView(QObject):
             path.parent.mkdir(parents=True,exist_ok=True,mode=0o700)
             fd,temp=tempfile.mkstemp(prefix='.store-scraper-',dir=path.parent)
             try:
-                os.fchmod(fd,0o600)
+                set_private_file_mode(fd, 0o600)
                 with os.fdopen(fd,'w',encoding='utf-8') as stream:
                     json.dump({'hosts':hosts},stream,separators=(',',':'));stream.flush();os.fsync(stream.fileno())
                 os.replace(temp,path)

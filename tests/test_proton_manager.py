@@ -8,6 +8,9 @@ import pytest
 
 from native_services import proton_manager as pm
 
+# Proton discovery/configuration is a Linux/Steam compatibility-tool feature.
+pytestmark = pytest.mark.linux_only
+
 
 def make_home(tmp_path):
     paths = pm.Paths(tmp_path)

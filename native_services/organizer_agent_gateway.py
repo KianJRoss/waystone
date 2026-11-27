@@ -13,6 +13,7 @@ import sys
 import importlib.util
 import uuid
 from .organizer_store import FIELDS
+from .platform import fsync_directory
 
 class GatewayError(ValueError):
     pass
@@ -41,9 +42,7 @@ class OrganizerAgentGateway:
                 stream.flush()
                 os.fsync(stream.fileno())
             os.replace(temporary, path)
-            directory = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY)
-            try: os.fsync(directory)
-            finally: os.close(directory)
+            fsync_directory(path.parent)
         finally:
             if os.path.exists(temporary): os.unlink(temporary)
 

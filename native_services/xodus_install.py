@@ -262,11 +262,19 @@ class XodusInstaller:
         self.busy_check=busy_check or self._external_busy
         self.title_reader=title_reader or public_product_titles;self._public_titles={}
     def _external_busy(self,destination):
+        # Xodus' process identity check is a Linux procfs adapter. On Windows
+        # there is no /proc; never turn an absent OS-specific inspection path
+        # into a failed install-plan check.
+        if os.name != 'posix' or not Path('/proc').is_dir():
+            return False
+        getuid = getattr(os, 'getuid', None)
+        if getuid is None:
+            return False
         executable=self.binary.resolve()
         for process in Path('/proc').iterdir():
             if not process.name.isdecimal():continue
             try:
-                if process.stat().st_uid!=os.getuid() or (process/'exe').resolve()!=executable:continue
+                if process.stat().st_uid!=getuid() or (process/'exe').resolve()!=executable:continue
                 argv=(process/'cmdline').read_bytes().split(b'\0')
                 command=argv[1].decode() if len(argv)>1 else ''
                 if command in ('streaming','download','extract','login','logout'):return True

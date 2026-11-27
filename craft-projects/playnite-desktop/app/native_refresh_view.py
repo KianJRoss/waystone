@@ -43,7 +43,7 @@ def _fingerprint(info):
 
 def _read(path, limit):
     """Bounded stable regular-file read, rejecting links, FIFOs and replacement."""
-    fd = os.open(path, os.O_RDONLY | os.O_CLOEXEC | os.O_NONBLOCK | os.O_NOFOLLOW)
+    fd = os.open(path, os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | os.O_NONBLOCK | os.O_NOFOLLOW)
     try:
         before = os.fstat(fd)
         if not stat.S_ISREG(before.st_mode) or before.st_size > limit:
@@ -71,7 +71,7 @@ def _source_digest(path, native_mode=False):
         raw, fingerprint = _read(path, CATALOG_LIMIT)
         return sha256(raw).hexdigest(), fingerprint
     # Stream SQLite bytes; never parse the database as JSON or allocate its size.
-    fd = os.open(path, os.O_RDONLY | os.O_CLOEXEC | os.O_NONBLOCK | os.O_NOFOLLOW)
+    fd = os.open(path, os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | os.O_NONBLOCK | os.O_NOFOLLOW)
     try:
         before = os.fstat(fd)
         if not stat.S_ISREG(before.st_mode) or before.st_size > DATABASE_LIMIT:

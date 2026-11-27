@@ -107,7 +107,7 @@ class TestInstallReceipts(unittest.TestCase):
         adapted = adapt_xodus_verified_receipt(xodus_receipt, host=self.host)
         # Adapter must not invent account id or extra required product fields.
         self.assertIsNone(adapted['account_id'])
-        self.assertEqual(adapted['install_path'], str(root.resolve()))
+        self.assertTrue(Path(adapted['install_path']).samefile(root))
         self.assertEqual(adapted['product_id'], PRODUCT)
         self.assertEqual(adapted['state'], 'files_verified')
         self.assertEqual(adapted.get('selected_product_id'), PRODUCT)
@@ -120,7 +120,7 @@ class TestInstallReceipts(unittest.TestCase):
         self.assertEqual(len(projected), 1)
         self.assertTrue(projected[0]['is_present'])
         self.assertEqual(projected[0]['content_id'], CONTENT)
-        self.assertEqual(projected[0]['executable'], xodus_receipt['executable'])
+        self.assertTrue(Path(projected[0]['executable']).samefile(Path(xodus_receipt['executable'])))
         # execute-style receipt file can be adapted the same way (public contract)
         receipt_path = root / '.waystone-install-receipt.json'
         receipt_path.write_text(json.dumps(xodus_receipt), encoding='utf-8')
@@ -313,8 +313,8 @@ class TestInstallReceipts(unittest.TestCase):
         by_acct = {r.get('account_id'): r for r in rows}
         self.assertTrue(by_acct['alice']['is_present'])
         self.assertTrue(by_acct['bob']['is_present'])
-        self.assertEqual(by_acct['alice']['install_path'], str(root_a))
-        self.assertEqual(by_acct['bob']['install_path'], str(root_b))
+        self.assertTrue(Path(by_acct['alice']['install_path']).samefile(root_a))
+        self.assertTrue(Path(by_acct['bob']['install_path']).samefile(root_b))
         # repeated write to same identity grows history, does not merge accounts
         self.clock_value = 1002
         self.reg.register(self._gog_receipt(root_a, exe_a, account_id='alice'))
@@ -354,7 +354,8 @@ class TestInstallReceipts(unittest.TestCase):
         self.reg.path.write_text(json.dumps(data), encoding='utf-8')
         rows = self.reg.query('g', links)
         # valid record still projected correctly; malformed ones must not crash query
-        self.assertTrue(any(r['is_present'] and r.get('install_path') == str(root) for r in rows))
+        self.assertTrue(any(r['is_present'] and isinstance(r.get('install_path'), str)
+                            and Path(r['install_path']).samefile(root) for r in rows))
         for r in rows:
             self.assertIn('is_present', r)
             self.assertIn('files_verified', r)

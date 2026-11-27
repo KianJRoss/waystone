@@ -42,7 +42,7 @@ def _aliases(row):
 
 def load_inventory(path, catalog, digest):
     """Validate detached data and independently reproduce every declared exact join."""
-    fd = os.open(os.fspath(path), os.O_RDONLY | os.O_CLOEXEC | os.O_NONBLOCK | os.O_NOFOLLOW)
+    fd = os.open(os.fspath(path), os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | os.O_NONBLOCK | os.O_NOFOLLOW)
     try:
         before = os.fstat(fd)
         if not stat.S_ISREG(before.st_mode) or before.st_size > MAX_BYTES:

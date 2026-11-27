@@ -9,6 +9,7 @@ import tempfile
 from typing import Any
 
 from PySide6.QtCore import QObject, Property, Signal, Slot
+from .platform import is_current_user_file, is_windows, set_private_file_mode
 
 
 class AssistantAnimationSettings(QObject):
@@ -55,7 +56,7 @@ class AssistantAnimationSettings(QObject):
             os.chmod(self.path.parent, 0o700)
             try:
                 info = self.path.lstat()
-                if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid():
+                if not stat.S_ISREG(info.st_mode) or not is_current_user_file(info):
                     raise OSError("unsafe settings file")
                 doc = json.loads(self.path.read_text(encoding="utf-8"))
                 if not isinstance(doc, dict):
@@ -74,17 +75,20 @@ class AssistantAnimationSettings(QObject):
             payload = (json.dumps(doc, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
             fd, tmp_name = tempfile.mkstemp(prefix=".waystone-settings-", dir=self.path.parent)
             try:
-                os.fchmod(fd, 0o600)
+                set_private_file_mode(fd, 0o600, path=tmp_name)
                 with os.fdopen(fd, "wb", closefd=True) as stream:
                     stream.write(payload)
                     stream.flush()
                     os.fsync(stream.fileno())
                 os.replace(tmp_name, self.path)
-                directory_fd = os.open(self.path.parent, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
-                try:
-                    os.fsync(directory_fd)
-                finally:
-                    os.close(directory_fd)
+                # Directory fsync is a POSIX durability primitive, not available
+                # on Windows. The file itself is flushed before atomic replace.
+                if not is_windows():
+                    directory_fd = os.open(self.path.parent, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
+                    try:
+                        os.fsync(directory_fd)
+                    finally:
+                        os.close(directory_fd)
             finally:
                 try:
                     os.unlink(tmp_name)

@@ -24,6 +24,11 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+
+def _fake_tool(name: str) -> Path:
+    """Absolute fake executable path valid on both POSIX and Windows."""
+    return Path(tempfile.gettempdir()) / "waystone-test-tools" / name
+
 from native_services.provider_jobs import (
     ProviderExecutionError,
     ProviderInstallPlan,
@@ -60,12 +65,12 @@ class MockProcessRunner:
 
 class TestProviderJobs(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
-        self.install_root = Path("/tmp/mock_games")
+        self.install_root = Path(tempfile.gettempdir()) / "mock_games"
         self.mock_runner = MockProcessRunner()
         self.custom_configs = {
-            "epic": ProviderToolConfig(binary_path=Path("/usr/bin/legendary")),
-            "gog": ProviderToolConfig(binary_path=Path("/usr/bin/gogdl")),
-            "amazon": ProviderToolConfig(binary_path=Path("/usr/bin/nile")),
+            "epic": ProviderToolConfig(binary_path=_fake_tool("legendary")),
+            "gog": ProviderToolConfig(binary_path=_fake_tool("gogdl")),
+            "amazon": ProviderToolConfig(binary_path=_fake_tool("nile")),
         }
         self.manager = ProviderJobManager(
             tool_configs=self.custom_configs,
@@ -170,7 +175,7 @@ class TestProviderJobs(unittest.IsolatedAsyncioTestCase):
         )
         argv, dest = build_provider_command(r_inst, self.custom_configs["epic"])
         self.assertEqual(argv, (
-            "/usr/bin/legendary", "install", "App1", "--base-path", str(self.install_root),
+            str(self.custom_configs["epic"].binary_path), "install", "App1", "--base-path", str(self.install_root),
             "--game-folder", "CustomFolder", "--with-dlcs", "-y",
         ))
         self.assertEqual(dest, self.install_root / "CustomFolder")
@@ -182,7 +187,7 @@ class TestProviderJobs(unittest.IsolatedAsyncioTestCase):
         )
         argv, dest = build_provider_command(r_up, self.custom_configs["epic"])
         self.assertEqual(argv, (
-            "/usr/bin/legendary", "install", "App1", "--base-path", str(self.install_root),
+            str(self.custom_configs["epic"].binary_path), "install", "App1", "--base-path", str(self.install_root),
             "--update-only", "-y",
         ))
         self.assertIsNone(dest)
@@ -194,7 +199,7 @@ class TestProviderJobs(unittest.IsolatedAsyncioTestCase):
         )
         argv, dest = build_provider_command(r_rep, self.custom_configs["epic"])
         self.assertEqual(argv, (
-            "/usr/bin/legendary", "install", "App1", "--base-path", str(self.install_root),
+            str(self.custom_configs["epic"].binary_path), "install", "App1", "--base-path", str(self.install_root),
             "--repair", "-y",
         ))
 
@@ -206,7 +211,7 @@ class TestProviderJobs(unittest.IsolatedAsyncioTestCase):
         )
         argv, dest = build_provider_command(r_inst, self.custom_configs["gog"])
         self.assertEqual(argv, (
-            "/usr/bin/gogdl", "download", "1424375862", "--path", str(self.install_root / "1424375862"), "--with-dlcs",
+            str(self.custom_configs["gog"].binary_path), "download", "1424375862", "--path", str(self.install_root / "1424375862"), "--with-dlcs",
         ))
         self.assertEqual(dest, self.install_root / "1424375862")
 
@@ -234,7 +239,7 @@ class TestProviderJobs(unittest.IsolatedAsyncioTestCase):
         )
         argv, dest = build_provider_command(r_inst, self.custom_configs["amazon"])
         self.assertEqual(argv, (
-            "/usr/bin/nile", "install", "amzn1.test", "--path", str(self.install_root / "amzn1.test"),
+            str(self.custom_configs["amazon"].binary_path), "install", "amzn1.test", "--path", str(self.install_root / "amzn1.test"),
         ))
 
         # Nile Update -> verb 'update'
@@ -307,7 +312,7 @@ class TestProviderJobs(unittest.IsolatedAsyncioTestCase):
         forged_plan = ProviderInstallPlan(
             recipe=recipe,
             tool_binary=legit_plan.tool_binary,
-            argv=("/usr/bin/nile", "evil_injected_command"),
+            argv=(str(legit_plan.tool_binary), "evil_injected_command"),
             cwd=legit_plan.cwd,
             destination_dir=legit_plan.destination_dir,
         )
@@ -325,7 +330,7 @@ class TestProviderJobs(unittest.IsolatedAsyncioTestCase):
 
         # Tampered cwd
         with self.assertRaises(ProviderValidationError):
-            await self.manager.execute_job(replace(legit_plan, cwd=Path("/etc")))
+            await self.manager.execute_job(replace(legit_plan, cwd=self.install_root / "etc"))
 
         # Tampered env (e.g. LD_PRELOAD)
         with self.assertRaises(ProviderValidationError):
@@ -333,11 +338,11 @@ class TestProviderJobs(unittest.IsolatedAsyncioTestCase):
 
         # Tampered destination_dir
         with self.assertRaises(ProviderValidationError):
-            await self.manager.execute_job(replace(legit_plan, destination_dir=Path("/usr/bin")))
+            await self.manager.execute_job(replace(legit_plan, destination_dir=self.install_root / "bin"))
 
         # Tampered tool_binary
         with self.assertRaises(ProviderValidationError):
-            await self.manager.execute_job(replace(legit_plan, tool_binary=Path("/bin/sh")))
+            await self.manager.execute_job(replace(legit_plan, tool_binary=_fake_tool("evil")))
 
         # Tampered argv
         with self.assertRaises(ProviderValidationError):

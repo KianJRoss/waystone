@@ -272,7 +272,7 @@ class TestPlanInstall:
         assert plan["kind"] == "switch-content"
         assert len(plan["files"]) == 1
         assert plan["files"][0]["member"] == "romfs/file.txt"
-        assert "0100000000001000/MyMod/romfs/file.txt" in plan["files"][0]["target"]
+        assert "0100000000001000/MyMod/romfs/file.txt" in plan["files"][0]["target"].replace("\\", "/")
         assert plan["conflicts"] == []
 
     def test_plan_install_ryujinx_success(self, tmp_path):
@@ -331,8 +331,15 @@ class TestPlanInstall:
     def test_plan_rejects_backslash(self, tmp_path):
         home = tmp_path / "home"
         zip_path = self._make_zip(tmp_path, [
-            ("romfs\\file.txt", b"bad"),
+            ("romfs/file.txt", b"bad"),
         ])
+        # zipfile normalizes backslashes in ZipInfo on Windows; set the raw
+        # archive member name after construction so the traversal fixture is
+        # the same bytes/metadata on every host.
+        with zipfile.ZipFile(zip_path, "w") as zf:
+            info = zipfile.ZipInfo("romfs/file.txt")
+            info.filename = "romfs\\file.txt"
+            zf.writestr(info, b"bad")
         with pytest.raises(ValueError, match="backslash"):
             plan_install(zip_path, "eden", title_id="0100000000001000", mod_name="Mod", home=home)
 

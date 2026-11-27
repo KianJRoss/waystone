@@ -103,7 +103,7 @@ class TestProviderEntitlements(unittest.TestCase):
         sugar = by_id["SugarApp"]
         self.assertEqual(sugar.title, "Sugar Journey")
         self.assertTrue(sugar.is_installed)
-        self.assertIn("store_cache/legendary_library.json", sugar.cache_provenance)
+        self.assertIn("store_cache/legendary_library.json", sugar.cache_provenance.replace("\\", "/"))
         self.assertIn("legendaryConfig/legendary/installed.json", sugar.cache_provenance)
         self.assertEqual(sugar.ownership_confidence, "cached_entitlement")
 

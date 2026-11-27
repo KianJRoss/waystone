@@ -12,6 +12,7 @@ from __future__ import annotations
 from contextlib import contextmanager
 from dataclasses import dataclass, asdict, field, replace
 from datetime import datetime, timezone
+from .platform import fsync_directory
 import json
 import os
 from pathlib import Path
@@ -495,12 +496,7 @@ class LaunchProfileStore:
                 f.flush()
                 os.fsync(f.fileno())
             os.replace(tmp_path, self.config_path)
-            # Sync parent directory
-            dfd = os.open(str(self.config_dir), os.O_RDONLY | os.O_DIRECTORY)
-            try:
-                os.fsync(dfd)
-            finally:
-                os.close(dfd)
+            fsync_directory(self.config_dir)
         finally:
             if tmp_path.exists():
                 try:

@@ -1,6 +1,7 @@
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
+import pytest
 import json
 from native_services.installation_library import catalog_install_choices, merge_cached_choices, InstallPreferences, inspect_destination
 
@@ -28,6 +29,8 @@ def test_cached_metadata_preserves_exact_game_links_and_provider_isolation():
     assert result[0]['is_installed'] is False and original[0]['title'] == 'old'
 
 
+# The fixture validates Linux XDG/mount preflight conventions.
+@pytest.mark.linux_only
 def test_install_preferences_only_write_app_file_on_explicit_save(tmp_path):
     p = tmp_path/'state'/'install.json'; prefs = InstallPreferences(p)
     with patch('os.path.ismount', return_value=True), patch('os.access', return_value=True):

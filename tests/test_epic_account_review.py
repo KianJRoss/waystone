@@ -2,6 +2,7 @@
 import asyncio,json,sys,os,stat
 from pathlib import Path
 from types import SimpleNamespace
+import pytest
 from native_services.epic_account import EpicAccountService,default_runner,_read_stream_limited
 
 def result(value):return SimpleNamespace(returncode=0,stdout=json.dumps(value),stderr='')
@@ -36,6 +37,9 @@ def test_output_overflow_cannot_be_parsed_as_truncated_success():
         raise AssertionError('overflow must reject, not silently truncate')
     asyncio.run(check())
 
+# POSIX umask applies only to the POSIX child-process implementation. Windows
+# uses the current user's app-data ACL instead; no Unix mode-bit claim is made.
+@pytest.mark.linux_only
 def test_child_private_umask_without_thread_unsafe_preexec(tmp_path):
     target=tmp_path/'child-created'
     code='import os,sys; f=os.open(sys.argv[1],os.O_WRONLY|os.O_CREAT,0o666);os.close(f)'

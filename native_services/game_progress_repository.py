@@ -144,7 +144,7 @@ class GameProgressRepository:
             result['notices'].append('No copied plugin metadata archive selected.');return
         fd=None;repo=None
         try:
-            fd=os.open(self._plugin_db,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK|os.O_CLOEXEC)
+            fd=os.open(self._plugin_db,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK|getattr(os, "O_CLOEXEC", 0))
             info=os.fstat(fd)
             if not stat.S_ISREG(info.st_mode) or info.st_size>MAX_DB_BYTES:raise ValueError()
             # Pin the explicitly selected inode; never follow a path from imported metadata.

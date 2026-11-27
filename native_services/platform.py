@@ -10,6 +10,7 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
+import stat
 from pathlib import Path, PurePath, PureWindowsPath
 from typing import Callable, Iterable
 
@@ -24,6 +25,29 @@ def is_linux(system: str | None = None) -> bool:
 
 def is_windows(system: str | None = None) -> bool:
     return system_name(system) in ("nt", "windows", "win32")
+
+
+def set_private_file_mode(fd: int, mode: int = 0o600, *, path: str | os.PathLike[str] | None = None) -> None:
+    """Apply private-file permissions using the native API available on this OS.
+
+    POSIX has descriptor-based chmod; Windows' stdlib exposes path-based chmod
+    with limited mode-bit semantics. Windows ACL inheritance remains the access
+    control boundary there, so callers must keep files under the user's app-data
+    directory and must not treat POSIX mode bits as an ACL.
+    """
+    chmod_fd = getattr(os, "fchmod", None)
+    if chmod_fd is not None:
+        chmod_fd(fd, mode)
+    elif path is not None:
+        os.chmod(path, mode)
+    # If Windows provides no fd chmod and the caller has no path, leave the
+    # inherited ACL intact; secure callers create files under private app data.
+
+
+def is_current_user_file(info: os.stat_result) -> bool:
+    """Check ownership where the OS exposes Unix UIDs; Windows has ACLs, not st_uid."""
+    getuid = getattr(os, "getuid", None)
+    return getuid is None or info.st_uid == getuid()
 
 
 def app_roots(*, home: str | os.PathLike[str] | None = None, environ=None,
@@ -75,6 +99,37 @@ def process_launch_options(system: str | None = None) -> dict[str, object]:
         return {"creationflags": getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0x00000200),
                 "close_fds": True}
     return {"start_new_session": True, "close_fds": True}
+
+
+def private_child_process_options(system: str | None = None) -> dict[str, object]:
+    """Native subprocess options for private provider config creation.
+
+    POSIX children can atomically inherit a restrictive umask. Windows does not
+    support subprocess umask; provider configs are instead rooted in app-data ACLs.
+    """
+    return {} if is_windows(system) else {"umask": 0o077}
+
+
+def is_executable_file(path: str | os.PathLike[str], *, system: str | None = None,
+                       pathext: str | None = None) -> bool:
+    """Check executable intent with native rules (Windows ignores POSIX X_OK)."""
+    candidate = Path(path)
+    if is_windows(system):
+        extensions = pathext if pathext is not None else os.environ.get("PATHEXT", ".COM;.EXE;.BAT;.CMD")
+        allowed = {ext.casefold() for ext in extensions.split(";") if ext}
+        return candidate.suffix.casefold() in allowed and os.access(candidate, os.R_OK)
+    return os.access(candidate, os.X_OK)
+
+
+def fsync_directory(path: str | os.PathLike[str], *, system: str | None = None) -> None:
+    """Persist a directory entry on POSIX; Windows has no directory-fsync API."""
+    if is_windows(system):
+        return
+    fd = os.open(Path(path), os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
 
 
 class WindowsProcessReader:

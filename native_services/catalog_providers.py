@@ -53,7 +53,7 @@ def _read(selected_path):
         raise UnsupportedCatalog('Select an absolute local export path explicitly')
     # Open once; never check a pathname and then reopen it. O_NONBLOCK prevents
     # a swapped FIFO from hanging before fstat rejects non-regular descriptors.
-    flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_CLOEXEC
+    flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | getattr(os, "O_CLOEXEC", 0)
 
     def fingerprint(info):
         return (info.st_dev, info.st_ino, info.st_mode, info.st_size,
