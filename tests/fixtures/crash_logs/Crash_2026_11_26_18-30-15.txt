@@ -1,0 +1,52 @@
+Unhandled native exception occurred at 0x7FF71233DDDA (SkyrimSE.exe+D6DDDA) on thread 10420!
+
+FrameworkName: NetScriptFramework
+FrameworkVersion: 15
+FrameworkArchitecture: x64
+GameLibrary: SkyrimSE
+GameLibraryVersion: 18
+ApplicationName: SkyrimSE.exe
+ApplicationVersion: 1.5.97.0
+VersionInfo: Successfully loaded
+Time: 26 Nov 2026 18:30:15.412
+
+Possible relevant objects (3)
+{
+  [   1]    TESNPC(Name: `Bandit Highwayman`, FormId: 14004A12, File: `OBIS SE.esp <- Skyrim.esm`)
+  [   6]    TESObjectARMO(Name: `Iron Plate Cuirass`, FormId: 14008B01, File: `OBIS SE.esp`)
+  [  14]    BSDynamicTriShape(Name: `HairMaleNord02`)
+}
+
+Probable callstack
+{
+  [0]   0x7FF71233DDDA     (SkyrimSE.exe+D6DDDA)          unk_D6DC10+1CA
+  [1]   0x7FF891203340     (hdtSMP64.dll+53340)
+  [2]   0x7FF8911F1100     (hdtSMP64.dll+41100)
+  [3]   0x7FF711B42010     (SkyrimSE.exe+572010)           Main::Update_571F00+110
+}
+
+Registers
+{
+  AX:       0x0                (NULL)
+  BX:       0x1C409822100      (TESNPC*) [1]
+  CX:       0x1C409844000      (BSDynamicTriShape*) [14]
+}
+
+Stack
+{
+  [SP+0]    0x7FF891203340     (hdtSMP64.dll+53340)
+  [SP+8]    0x1C409822100      (TESNPC*) [1]
+}
+
+Modules
+{
+  SkyrimSE.exe:                                     0x7FF7115D0000
+  ntdll.dll:                                        0x7FFA55610000
+  hdtSMP64.dll:                                     0x7FF8911B0000
+}
+
+Plugins (2)
+{
+  [00] Skyrim.esm
+  [14] OBIS SE.esp
+}

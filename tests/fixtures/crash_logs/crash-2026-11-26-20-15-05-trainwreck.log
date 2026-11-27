@@ -1,0 +1,33 @@
+2026-11-26 20:15:05
+SkyrimSE.exe v1.6.1170
+Trainwreck v1.4.0
+
+Unhandled exception "EXCEPTION_INT_DIVIDE_BY_ZERO" at 0x7FF844102210 CombatMusicFix.dll+0012210
+
+SYSTEM SPECS:
+    OS: Windows 10 Pro 22H2 (Proton 9.0)
+    CPU: AMD Ryzen 7 7800X3D
+    RAM: 32 GiB
+
+PROBABLE CALL STACK:
+    [0] 0x7FF844102210 CombatMusicFix.dll+0012210
+    [1] 0x7FF844105100 CombatMusicFix.dll+0015100
+    [2] 0x7FF849001A20 po3_Tweaks.dll+0021A20
+    [3] 0x7FF711904400 SkyrimSE.exe+0334400
+    [4] 0x7FFA55667788 ntdll.dll+0056788
+
+REGISTERS:
+    RAX: 0x0 (size_t)
+    RBX: 0x22014400800 (BGSMusicTrackFormWrapper*)
+        File: "Northern Roads.esp"
+        Flags: 0x00000008
+        FormID: 0x18004120
+
+STACK:
+    [RSP+0x00] 0x7FF844105100 (void* -> CombatMusicFix.dll+0015100)
+    [RSP+0x08] 0x22014400800 (BGSMusicTrackFormWrapper*) -> File: "Northern Roads.esp"
+
+MODULES:
+    SkyrimSE.exe        0x7FF7115D0000
+    CombatMusicFix.dll  0x7FF8440F0000
+    po3_Tweaks.dll      0x7FF848FE0000

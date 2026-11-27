@@ -15,6 +15,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import time
 
 
 def discover_files(paths: list[str]) -> list[Path]:
@@ -35,7 +36,7 @@ def pytest_prefix(timeout: int, pytest_args: list[str]) -> list[str]:
 
 def run_group(command: list[str], *, cwd: Path, env: dict[str, str], hard_timeout: int) -> tuple[int, str]:
     try:
-        result = subprocess.run(command, cwd=cwd, env=env, text=True,
+        result = subprocess.run(command, cwd=cwd, env=env, encoding="utf-8", errors="replace",
                                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                 timeout=hard_timeout, check=False)
         return result.returncode, result.stdout
@@ -63,7 +64,14 @@ def main(argv: list[str] | None = None) -> int:
         print("\n".join(p.as_posix() for p in files))
         return 0
 
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):
+            pass
     env = os.environ.copy()
+    env.setdefault("PYTHONIOENCODING", "utf-8")
+    env.setdefault("PYTHONUTF8", "1")
     failed = []
     isolated = {Path(p) for p in args.isolate_file}
     prefix = pytest_prefix(args.timeout, [])
@@ -73,7 +81,7 @@ def main(argv: list[str] | None = None) -> int:
             try:
                 collect = subprocess.run(
                     [sys.executable, "-m", "pytest", "--collect-only", "-q", "-m", "not linux_only", path.as_posix()],
-                    cwd=root, env=env, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                    cwd=root, env=env, encoding="utf-8", errors="replace", stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                     timeout=args.hard_timeout, check=False)
             except subprocess.TimeoutExpired as exc:
                 output = exc.stdout or ""
@@ -99,17 +107,24 @@ def main(argv: list[str] | None = None) -> int:
         for group in groups:
             label = group
             print(f"[RUN] {label}", flush=True)
-            code, output = run_group([*prefix, group], cwd=root, env=env,
-                                     hard_timeout=args.hard_timeout)
+            started = time.monotonic()
+            try:
+                code, output = run_group([*prefix, group], cwd=root, env=env,
+                                         hard_timeout=args.hard_timeout)
+            except Exception as exc:  # the runner must never die on one group
+                code, output = 125, f"[runner] could not run group: {exc!r}\n"
+            elapsed = time.monotonic() - started
             if code:
                 failed.append((label, code, output))
-                print(f"[FAIL {code}] {label}", flush=True)
+                print(f"[FAIL {code}] {label} ({elapsed:.0f}s)", flush=True)
                 print(output, flush=True)
             else:
                 summary = next((line.strip() for line in reversed(output.splitlines())
                                 if " passed" in line or " skipped" in line), "passed")
-                print(f"[PASS] {label}: {summary}", flush=True)
+                print(f"[PASS] {label}: {summary} ({elapsed:.0f}s)", flush=True)
     print(f"Windows pytest groups: {len(files)} modules, {len(failed)} failed/timed out", flush=True)
+    for label, code, _output in failed:
+        print(f"  FAILED [{code}] {label}", flush=True)
     return 1 if failed else 0
 
 

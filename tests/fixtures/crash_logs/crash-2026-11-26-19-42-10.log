@@ -1,0 +1,61 @@
+Skyrim SSE v1.6.1170
+CrashLoggerSSE v1-14-1-0 May 18 2024 23:00:58
+
+Unhandled exception "EXCEPTION_ACCESS_VIOLATION" at 0x7FF6A1234560 Precision.dll+004560
+Exception Flags: 0x00000000
+Number of Parameters: 2
+Access Violation: Tried to read memory at 0x0000000000000018
+
+SYSTEM SPECS:
+	OS: Microsoft Windows 10 Pro v10.0.19045
+	CPU: GenuineIntel 12th Gen Intel(R) Core(TM) i7-12700K
+	GPU #1: AMD Radeon RX 7900 XTX
+	PHYSICAL MEMORY: 11.42 GB/31.81 GB
+
+PROBABLE CALL STACK:
+	[ 0] 0x7FF6A1234560                   Precision.dll+004560
+	[ 1] 0x7FF6A12389B0                   Precision.dll+0089B0
+	[ 2] 0x7FF6A9981234     TrueDirectionalMovement.dll+011234
+	[ 3] 0x7FF712340000                    SkyrimSE.exe+0D6DDDA -> 77812+0x1CA
+	[ 4] 0x7FFA11223344                    KERNEL32.DLL+0012344
+	[ 5] 0x7FFA55667788                       ntdll.dll+0056788
+
+REGISTERS:
+	RAX 0x0                (size_t) [0]
+	RCX 0x1F4A8890100      (Character*)
+		File: "Lux.esp"
+		Modified by: Skyrim.esm -> Dawnguard.esm -> Lux.esp
+		Flags: 0x00040408
+		Name: "Draugr Scourge"
+		FormID: 0x00023BC1
+		FormType: ActorCharacter (62)
+	RDX 0x1F4B0012400      (TESObjectWEAP*)
+		File: "AnimatedArmoury.esp"
+		Flags: 0x00000008
+		Name: "Nordic Halberd"
+		FormID: 0xFE012804
+
+STACK:
+	[RSP+0  ] 0x7FF6A12389B0      (void* -> Precision.dll+0089B0)
+	[RSP+8  ] 0x1F4A8890100       (Character*) -> File: "Lux.esp"
+	[RSP+10 ] 0x7FF6A9981234      (void* -> TrueDirectionalMovement.dll+011234)
+
+MODULES:
+	SkyrimSE.exe                     0x7FF7115D0000
+	ntdll.dll                        0x7FFA55610000
+	KERNEL32.DLL                     0x7FFA11210000
+	skse64_1_6_1170.dll              0x7FF6B0000000
+	Precision.dll                    0x7FF6A1230000
+	TrueDirectionalMovement.dll      0x7FF6A9970000
+
+SKSE PLUGINS:
+	Precision.dll v2.0.4
+	TrueDirectionalMovement.dll v2.2.5
+
+PLUGINS:
+	Light: 1	Regular: 4	Total: 5
+	[ 0]     Skyrim.esm
+	[ 1]     Update.esm
+	[ 2]     Dawnguard.esm
+	[ 3]     Lux.esp
+	[FE:  0] AnimatedArmoury.esp
