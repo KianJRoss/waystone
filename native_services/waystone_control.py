@@ -52,11 +52,11 @@ class AppJournal:
             os.chmod(self.path.parent, 0o700)
         except OSError:
             pass
-        flags = os.O_WRONLY | os.O_CREAT | os.O_APPEND
+        flags = os.O_WRONLY | getattr(os, "O_BINARY", 0) | os.O_CREAT | os.O_APPEND
         if hasattr(os, "O_CLOEXEC"):
             flags |= getattr(os, "O_CLOEXEC", 0)
         if hasattr(os, "O_NOFOLLOW"):
-            flags |= os.O_NOFOLLOW
+            flags |= getattr(os, "O_NOFOLLOW", 0)
         fd = os.open(self.path, flags, 0o600)
         try:
             set_private_file_mode(fd, 0o600)
@@ -120,11 +120,11 @@ class WaystoneControlServer(QObject):
                 or parent_info.st_mode & 0o077):
             raise RuntimeError("Waystone runtime socket directory is unsafe")
         lock_path = self._path.with_suffix(self._path.suffix + ".lock")
-        flags = os.O_RDWR | os.O_CREAT
+        flags = os.O_RDWR | getattr(os, "O_BINARY", 0) | os.O_CREAT
         if hasattr(os, "O_CLOEXEC"):
             flags |= getattr(os, "O_CLOEXEC", 0)
         if hasattr(os, "O_NOFOLLOW"):
-            flags |= os.O_NOFOLLOW
+            flags |= getattr(os, "O_NOFOLLOW", 0)
         try:
             self._lock_fd = os.open(lock_path, flags, 0o600)
             set_private_file_mode(self._lock_fd, 0o600)

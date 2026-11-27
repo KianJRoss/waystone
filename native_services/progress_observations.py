@@ -20,7 +20,7 @@ class ProgressObservations:
         raw=json.dumps(value,allow_nan=False)
         if len(raw.encode())>4*1024*1024:raise ValueError('Observation too large')
         if not self.path.exists():
-            fd=os.open(self.path,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600);os.close(fd)
+            fd=os.open(self.path,os.O_WRONLY | getattr(os, "O_BINARY", 0)|os.O_CREAT|os.O_EXCL|getattr(os, "O_NOFOLLOW", 0),0o600);os.close(fd)
             with closing(sqlite3.connect(self.path)) as db,db:
                 db.execute(f'PRAGMA application_id={APP_ID}')
                 db.execute('CREATE TABLE observations(provider TEXT,account_id TEXT,game_key TEXT,product_id TEXT,payload TEXT,PRIMARY KEY(provider,account_id,game_key,product_id))')

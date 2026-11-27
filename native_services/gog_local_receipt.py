@@ -19,7 +19,7 @@ _PRODUCT = re.compile(r'[1-9][0-9]{0,19}\Z')
 def _snapshot(path, root):
     if not path.resolve().is_relative_to(root):
         raise ValueError('metadata_escape')
-    fd = os.open(path, os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | os.O_NOFOLLOW | os.O_NONBLOCK)
+    fd = os.open(path, os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0))
     try:
         before = os.fstat(fd)
         if not stat.S_ISREG(before.st_mode) or before.st_size > _MAX_BYTES:

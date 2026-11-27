@@ -55,7 +55,7 @@ def _art(value, field, source_id):
 
 def load_native_catalog(path, *, with_digest=False, opened_fd=None):
     path = Path(path)
-    fd = os.dup(opened_fd) if opened_fd is not None else os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | getattr(os, "O_CLOEXEC", 0))
+    fd = os.dup(opened_fd) if opened_fd is not None else os.open(path, os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0) | getattr(os, "O_CLOEXEC", 0))
     repository = None
     try:
         before = os.fstat(fd)

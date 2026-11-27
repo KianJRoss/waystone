@@ -47,7 +47,7 @@ def _read_bounded(fd, limit):
 
 def load_catalog(path, *, with_digest=False):
     """Read only an explicit regular JSON file; never use JSON-supplied roots."""
-    flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | os.O_NONBLOCK | os.O_NOFOLLOW
+    flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NONBLOCK", 0) | getattr(os, "O_NOFOLLOW", 0)
     fd = os.open(os.fspath(path), flags)
     try:
         before = os.fstat(fd)
@@ -136,7 +136,7 @@ class MediaCatalog(QQuickImageProvider):
         self._handles = {}
         if media_root is not None:
             self.root = Path(media_root).resolve(strict=True)
-            fd = os.open(self.root, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | os.O_NOFOLLOW | getattr(os, "O_CLOEXEC", 0))
+            fd = os.open(self.root, os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_CLOEXEC", 0))
             try:
                 info = os.fstat(fd)
                 self.root_identity = (info.st_dev, info.st_ino)
@@ -150,15 +150,15 @@ class MediaCatalog(QQuickImageProvider):
             raise ValueError('No explicit safe media root/reference')
         descriptors = []
         try:
-            parent = os.open(self.root, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | os.O_NOFOLLOW | getattr(os, "O_CLOEXEC", 0))
+            parent = os.open(self.root, os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_CLOEXEC", 0))
             descriptors.append(parent)
             info = os.fstat(parent)
             if (info.st_dev, info.st_ino) != self.root_identity:
                 raise ValueError('Selected media root changed')
             for part in parts[:-1]:
-                parent = os.open(part, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | os.O_NOFOLLOW | getattr(os, "O_CLOEXEC", 0), dir_fd=parent)
+                parent = os.open(part, os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_CLOEXEC", 0), dir_fd=parent)
                 descriptors.append(parent)
-            fd = os.open(parts[-1], os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | getattr(os, "O_CLOEXEC", 0), dir_fd=parent)
+            fd = os.open(parts[-1], os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0) | getattr(os, "O_CLOEXEC", 0), dir_fd=parent)
             descriptors.append(fd)
             info = os.fstat(fd)
             if not stat.S_ISREG(info.st_mode) or not 0 < info.st_size <= MAX_MEDIA_BYTES:

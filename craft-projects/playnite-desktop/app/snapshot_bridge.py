@@ -96,7 +96,7 @@ def _read_export(path):
     No paths from the JSON payload are opened. Unbuffered reads avoid read-ahead
     outside the caller's remaining byte budget.
     """
-    fd = os.open(path, os.O_RDONLY | os.O_NONBLOCK | getattr(os, "O_CLOEXEC", 0) | os.O_NOCTTY)
+    fd = os.open(path, os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NONBLOCK", 0) | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOCTTY", 0))
     try:
         info = os.fstat(fd)
         if not stat.S_ISREG(info.st_mode):

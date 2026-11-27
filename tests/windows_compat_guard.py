@@ -102,7 +102,7 @@ def pytest_runtest_call(item):
         if not any(path.is_relative_to(root) for root in app_roots):
             continue
         for attr, wrapped, absent in (
-            ('os', os, {'fchmod', 'getuid', 'O_CLOEXEC', 'O_DIRECTORY', 'O_NOFOLLOW'}),
+            ('os', os, {'fchmod', 'getuid', 'killpg', 'O_CLOEXEC', 'O_DIRECTORY', 'O_NOFOLLOW', 'O_NONBLOCK', 'O_NOCTTY'}),
             ('socket', socket, {'AF_UNIX'}),
         ):
             if namespace.get(attr) is wrapped:

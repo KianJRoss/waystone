@@ -40,7 +40,7 @@ MEDIA_ROLES = ('cover', 'background', 'icon', 'hero', 'logo')
 KIND = 'native-manual-artwork-v1'
 # Keep module importable on Windows even though the current secure store implementation
 # still relies on POSIX dir_fd/openat operations and is not yet enabled there.
-_FLAGS = (os.O_RDONLY | getattr(os, 'O_NOFOLLOW', 0) | getattr(os, 'O_CLOEXEC', 0)
+_FLAGS = (os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, 'O_NOFOLLOW', 0) | getattr(os, 'O_CLOEXEC', 0)
           | getattr(os, 'O_NONBLOCK', 0))
 _ASSET = re.compile(r'[0-9a-f]{64}\.(png|jpeg|webp|bmp|ico)\Z')
 
@@ -217,7 +217,7 @@ class ArtworkOverrideStore:
         try:
             os.mkdir(path.name, 0o700, dir_fd=parent)
             fd = os.open(path.name, _FLAGS | getattr(os, "O_DIRECTORY", 0), dir_fd=parent)
-            lock = os.open('lock', os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+            lock = os.open('lock', os.O_WRONLY | getattr(os, "O_BINARY", 0) | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0),
                            0o600, dir_fd=fd)
             os.fsync(lock)
             os.close(lock)
@@ -240,7 +240,7 @@ class ArtworkOverrideStore:
     def _commit(fd, state):
         raw = ArtworkOverrideStore._encoded(state)
         name = '.txn-' + uuid.uuid4().hex
-        out = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+        out = os.open(name, os.O_WRONLY | getattr(os, "O_BINARY", 0) | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0),
                       0o600, dir_fd=fd)
         try:
             with os.fdopen(out, 'wb') as stream:
@@ -426,7 +426,7 @@ class ArtworkOverrideStore:
             return
         if count >= MAX_ASSETS or total + len(raw) > MAX_TOTAL_BYTES:
             raise ValueError('Managed copy capacity reached; retained undo assets not evicted')
-        out = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+        out = os.open(name, os.O_WRONLY | getattr(os, "O_BINARY", 0) | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0),
                       0o600, dir_fd=fd)
         try:
             with os.fdopen(out, 'wb') as stream:
